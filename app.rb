@@ -14,6 +14,7 @@ require_relative 'api/base'
 require_relative 'models/user'
 
 #Configs
+ENV['RACK_ENV'] ||= "development"
 dbconfig = YAML::load(File.open('config/database.yml'))
 ActiveRecord::Base.establish_connection(dbconfig[ENV['RACK_ENV']])
 ActiveRecord::Base.logger = nil
