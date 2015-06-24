@@ -15,7 +15,8 @@ describe API::V1::Users do
       post "/v1/users", {email: email, password: password}
       user = User.where(email: email).first
       last_response.status.should == 201
-      expect(last_response.headers["Set-Cookie"]).to eq "user_id=#{user.id}\napi_token=#{user.api_token}"
+      expect(last_response.headers["Set-Cookie"].match("user_id=#{user.id}").nil?).to eq false
+      expect(last_response.headers["Set-Cookie"].match("api_token=#{user.api_token}").nil?).to eq false
     end
     it "sets the password" do
       post "/v1/users", {email: email, password: password}
@@ -38,7 +39,8 @@ describe API::V1::Users do
       post "/v1/users/facebook", {email: email, facebook_id: facebook_id}
       user = User.where(email: email).first
       expect(last_response.status).to eq 201
-      expect(last_response.headers["Set-Cookie"]).to eq "user_id=#{user.id}\napi_token=#{user.api_token}"
+      expect(last_response.headers["Set-Cookie"].match("user_id=#{user.id}").nil?).to eq false
+      expect(last_response.headers["Set-Cookie"].match("api_token=#{user.api_token}").nil?).to eq false
     end
   end
 
@@ -48,7 +50,8 @@ describe API::V1::Users do
         user = FactoryGirl.create(:user, password: "password1212")
         post "/v1/users/auth", {email: user.email, password: "password1212"}
         expect(last_response.status).to eq 201
-        expect(last_response.headers["Set-Cookie"]).to eq "user_id=#{user.id}\napi_token=#{user.api_token}"
+        expect(last_response.headers["Set-Cookie"].match("user_id=#{user.id}").nil?).to eq false
+        expect(last_response.headers["Set-Cookie"].match("api_token=#{user.api_token}").nil?).to eq false
       end
     end
     context "when email and password are invalid" do

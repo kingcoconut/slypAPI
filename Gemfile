@@ -6,6 +6,7 @@ gem 'activerecord'
 gem 'grape-activerecord'
 gem 'mysql2'
 gem 'pry'
+gem 'rack-cors', :require => "rack/cors"
 
 group :test do
   gem 'rspec'
