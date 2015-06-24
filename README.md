@@ -10,7 +10,7 @@ ruby 2.2.2
 `rake db:migrate`  
   
 *add api-dev.slyp.io to your /etc/hosts for localhost  
-*add this to your nginx.conf
+*add this to your nginx.conf  
  `server{
       listen 80;
       server_name api-dev.slyp.io;
