@@ -116,3 +116,6 @@ DEPENDENCIES
   rack-test
   rspec
   shoulda
+
+BUNDLED WITH
+   1.10.4
