@@ -5,7 +5,6 @@ module API
         desc "Create a user with email and password"
         params do
           requires :email, type: String
-          requires :password, type: String
         end
         post do
           user = User.new(declared(params))
@@ -35,24 +34,6 @@ module API
               status: 400,
               messages: user.errors
               }, 400)
-          end
-        end
-
-        desc "Auth a user"
-        params do
-          requires :email, type: String
-          requires :password, type: String
-        end
-        post :auth do
-          user = User.where(email: params[:email]).first
-          if user && user.valid_password?(params[:password])
-            set_user_cookies(user)
-            return
-          else
-            error!({
-              status: 400,
-              message: "invalid password or email",
-            }, 400)
           end
         end
       end
