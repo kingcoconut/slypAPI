@@ -9,13 +9,13 @@ require 'mail'
 # API
 require_relative 'api/v1/users'
 require_relative 'api/v1/slyps'
+require_relative 'api/v1/slyp_chats'
 require_relative 'api/v1/base'
+Dir[Dir.pwd + "/api/v1/**/*.rb"].each { |f| require f }
 require_relative 'api/base'
 
 # Models
-require_relative 'models/user'
-require_relative 'models/slyp'
-require_relative 'models/user_slyp'
+Dir[Dir.pwd + "/models/**/*.rb"].each { |f| require f }
 
 # Configs
 ENV['RACK_ENV'] ||= "development"

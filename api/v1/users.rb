@@ -11,7 +11,7 @@ module API
         post do
           user = User.find_or_create_by(email: params["email"])
           email = user.email
-          access_token = user.generate_access_token
+          access_token = user.regenerate_access_token
           mail = Mail.deliver do
             from "Slyp <no-reply@slyp.io>"
             to email

@@ -22,6 +22,7 @@ module API
 
       mount API::V1::Users
       mount API::V1::Slyps
+      mount API::V1::SlypChats
     end
   end
 end
