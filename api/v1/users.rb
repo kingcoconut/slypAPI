@@ -1,3 +1,5 @@
+require 'open-uri'
+
 module API
   module V1
     class Users < Grape::API
@@ -7,15 +9,17 @@ module API
           requires :email, type: String
         end
         post do
-          user = User.new(declared(params))
-          if user.save
-            set_user_cookies(user)
-            return user
-          else
-            error!({
-              status: 400,
-              messages: user.errors
-              }, 400)
+          user = User.find_or_create_by(email: params["email"])
+          email = user.email
+          access_token = user.generate_access_token
+          mail = Mail.deliver do
+            from "Slyp <no-reply@slyp.io>"
+            to email
+            subject "Slyp Test"
+            html_part do
+              content_type 'text/html; charset=UTF-8'
+              body "Slyp this up your <a href='http://meatspin.com'>pooper</a> then go <a href='http://api-dev.slyp.io/v1/users/auth?email=#{CGI.escape(email)}&access_token=#{access_token}'>here</a>"
+            end
           end
         end
 
@@ -35,6 +39,13 @@ module API
               messages: user.errors
               }, 400)
           end
+        end
+
+        get :auth do
+          if user = User.where(email: params["email"], access_token: params["access_token"]).first
+            set_user_cookies(user)
+          end
+          redirect "http://dev.slyp.io/"
         end
       end
 

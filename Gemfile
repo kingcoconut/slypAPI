@@ -7,6 +7,7 @@ gem 'grape-activerecord'
 gem 'mysql2'
 gem 'pry'
 gem 'rack-cors', :require => "rack/cors"
+gem 'mail'
 
 group :test do
   gem 'rspec'
@@ -14,4 +15,5 @@ group :test do
   gem 'factory_girl'
   gem 'faker'
   gem 'shoulda'
+  gem 'database_cleaner'
 end
