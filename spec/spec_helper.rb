@@ -23,6 +23,9 @@ require 'factory_girl'
 require 'faker'
 require 'shoulda'
 require 'pry'
+require 'database_cleaner'
+
+Dir[Dir.pwd + "/spec/factories/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -50,7 +53,7 @@ RSpec.configure do |config|
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
-=begin
+
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples
@@ -65,25 +68,6 @@ RSpec.configure do |config|
   #   - http://myronmars.to/n/dev-blog/2014/05/notable-changes-in-rspec-3#new__config_option_to_disable_rspeccore_monkey_patching
   config.disable_monkey_patching!
 
-  # This setting enables warnings. It's recommended, but in some cases may
-  # be too noisy due to issues in dependencies.
-  config.warnings = true
-
-  # Many RSpec users commonly either run the entire suite or an individual
-  # file, and it's useful to allow more verbose output when running an
-  # individual spec file.
-  if config.files_to_run.one?
-    # Use the documentation formatter for detailed output,
-    # unless a formatter has already been configured
-    # (e.g. via a command-line flag).
-    config.default_formatter = 'doc'
-  end
-
-  # Print the 10 slowest examples and example groups at the
-  # end of the spec run, to help surface which specs are running
-  # particularly slow.
-  config.profile_examples = 10
-
   # Run specs in random order to surface order dependencies. If you find an
   # order dependency and want to debug it, you can fix the order by providing
   # the seed, which is printed after each run.
@@ -95,5 +79,16 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
-=end
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
+
 end

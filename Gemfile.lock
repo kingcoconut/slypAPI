@@ -23,6 +23,7 @@ GEM
     coderay (1.1.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
+    database_cleaner (1.4.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
@@ -54,7 +55,10 @@ GEM
     i18n (0.7.0)
     ice_nine (0.11.1)
     json (1.8.3)
+    mail (2.6.3)
+      mime-types (>= 1.16, < 3)
     method_source (0.8.2)
+    mime-types (2.6.1)
     minitest (5.7.0)
     multi_json (1.11.1)
     multi_xml (0.5.5)
@@ -105,11 +109,13 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  database_cleaner
   factory_girl
   faker
   grape
   grape-activerecord
   grape-entity
+  mail
   mysql2
   pry
   rack-cors
