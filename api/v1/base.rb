@@ -14,7 +14,14 @@ module API
       #   error!('Unauthorized', 401) unless headers['Authorization'] == "some token"
       # end
 
+      helpers do
+        def current_user
+          User.where(id: cookies[:user_id], api_token: cookies[:api_token]).first
+        end
+      end
+
       mount API::V1::Users
+      mount API::V1::Slyps
     end
   end
 end
