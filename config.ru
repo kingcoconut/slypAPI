@@ -4,7 +4,7 @@ require 'rack/cors'
 use Rack::Cors do
   allow do
     origins 'dev.slyp.io', 'staging.slyp.io', 'alpha.slyp.io'
-    resource '*', headers: :any, methods: :get
+    resource '*', headers: :any, methods: [:get, :post, :options, :put]
   end
 end
 use ActiveRecord::ConnectionAdapters::ConnectionManagement
