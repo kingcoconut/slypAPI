@@ -14,7 +14,7 @@ class Slyp < ActiveRecord::Base
     expose :text
     expose :description
     expose :top_image
-    expose :sitename
+    expose :site_name
     expose :video_url
   end
 end

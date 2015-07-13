@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150712024849) do
+ActiveRecord::Schema.define(version: 20150712221312) do
+
+  create_table "slyp_chat_messages", force: :cascade do |t|
+    t.integer  "user_id",      limit: 4
+    t.integer  "slyp_chat_id", limit: 4
+    t.text     "content",      limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "slyp_chat_users", force: :cascade do |t|
     t.integer  "user_id",      limit: 4

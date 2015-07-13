@@ -10,6 +10,7 @@ require 'mail'
 require_relative 'api/v1/users'
 require_relative 'api/v1/slyps'
 require_relative 'api/v1/slyp_chats'
+require_relative 'api/v1/slyp_chat_messages'
 require_relative 'api/v1/base'
 Dir[Dir.pwd + "/api/v1/**/*.rb"].each { |f| require f }
 require_relative 'api/base'

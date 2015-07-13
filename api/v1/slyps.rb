@@ -9,7 +9,7 @@ module API
       resource :slyps do
         desc "Return all of a users slyps"
         get do
-          return current_user.slyps.order('createdon DESC')
+          present current_user.slyps.order('createdon DESC')
         end
       end
     end

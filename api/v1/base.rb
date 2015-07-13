@@ -16,13 +16,15 @@ module API
 
       helpers do
         def current_user
-          User.where(id: cookies[:user_id], api_token: cookies[:api_token]).first
+          # memoize current_user
+          @user ||= User.where(id: cookies[:user_id], api_token: cookies[:api_token]).first
         end
       end
 
       mount API::V1::Users
       mount API::V1::Slyps
       mount API::V1::SlypChats
+      mount API::V1::SlypChatMessages
     end
   end
 end
