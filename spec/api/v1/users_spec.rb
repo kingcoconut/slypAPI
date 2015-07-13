@@ -28,17 +28,17 @@ RSpec.describe API::V1::Users do
     end
   end
 
-  describe "GET /v1/users" do
+  describe "GET /v1/users/auth" do
     let(:user){ FactoryGirl.create(:user) }
     context "when a valid email and access token are sent" do
       it "set cookies" do
-        user.generate_access_token
+        user.regenerate_access_token
         get "/v1/users/auth", {email: user.email, access_token: user.access_token}
         expect(last_response.headers["Set-Cookie"].match("user_id=#{user.id}").nil?).to eq false
         expect(last_response.headers["Set-Cookie"].match("api_token=#{user.api_token}").nil?).to eq false
       end
       it "redirects to home" do
-        user.generate_access_token
+        user.regenerate_access_token
         get "/v1/users/auth", {email: user.email, access_token: user.access_token}
         expect(last_response.status).to eq 302
       end
