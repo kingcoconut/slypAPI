@@ -12,6 +12,7 @@ class Slyp < ActiveRecord::Base
     expose :author
     expose :date
     expose :text
+    expose :summary
     expose :description
     expose :top_image
     expose :site_name
