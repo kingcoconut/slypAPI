@@ -27,16 +27,14 @@ RSpec.describe API::V1::SlypChats do
           end
         end
       end
-      it "returns user_id (s) of the slyp_chat" do
+      it "returns users nested in the slyp_chats" do
         json_resp = JSON.parse(last_response.body)
-        users = json_resp.first["users"]
-        slyp_chat_id = json_resp.first["id"]
-        expect(users).to_not be_nil
-        users.each do |el|
-          user_id = el["id"] 
-          expect(SlypChatUser.where(user_id: user_id, slyp_chat_id: slyp_chat_id)).to_not be_nil
+        users = json_resp.each do |slyp_chat|
+          users = slyp_chat["users"]
+          slyp_chat["users"].each do |user|
+            expect(SlypChatUser.where(user_id: user["id"], slyp_chat_id: slyp_chat["id"]).first).to_not be_nil
+          end
         end
-
       end
 
       context "when slyp_id does not exist for the user" do
