@@ -34,12 +34,12 @@ class User < ActiveRecord::Base
       UserSlyp.create(user_id: recipient_id, slyp_id: slyp_id)
     end
 
-    if ENV['RACK_ENV'] != "test"
+    recipient = User.find(recipient_id)
+    email = recipient.email
+    access_token = recipient.access_token
+    sender_email = self.email
+    if ENV['RACK_ENV'] != "test" && email.split("@")[1].match("example.com").nil?
       # this should be made into an async job
-      recipient = User.find(recipient_id)
-      email = recipient.email
-      access_token = recipient.access_token
-      sender_email = self.email
       mail = Mail.deliver do
         from "Slyp <no-reply@slyp.io>"
         to email
