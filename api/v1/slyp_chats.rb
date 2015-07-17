@@ -27,7 +27,6 @@ module API
         end
         get do
           error!('Not Found', 404) unless UserSlyp.where(user_id: current_user.id, slyp_id: params["slyp_id"]).first
-          slyp_chat_users = SlypChatUser.joins(:slyp_chat).where(slyp_id: params["slyp_id"])
           present current_user.slyp_chats.where(slyp_id: params["slyp_id"])
         end
       end
