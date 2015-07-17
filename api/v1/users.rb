@@ -63,6 +63,12 @@ module API
             domain: '.slyp.io',
             path: '/'
           }
+          cookies[:email] = {
+            value: user.email,
+            expires: Time.now + 10.years,
+            domain: '.slyp.io',
+            path: '/'
+          }
         end
       end
     end

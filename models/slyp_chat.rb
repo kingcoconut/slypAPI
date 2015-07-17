@@ -1,3 +1,5 @@
+require_relative 'user.rb'
+
 class SlypChat < ActiveRecord::Base
   has_many :slyp_chat_messages
   has_many :slyp_chat_users
@@ -6,5 +8,6 @@ class SlypChat < ActiveRecord::Base
   class Entity < Grape::Entity
     expose :id
     expose :slyp_chat_messages
+    expose :users, using: User::Entity
   end
 end

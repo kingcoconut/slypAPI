@@ -24,6 +24,7 @@ RSpec.describe API::V1::Users do
       it "sends an email to the user with signin link" do
         expect(Mail).to receive(:deliver) { nil }
         post "/v1/users", {email: email}
+        expect(last_response.status).to eq 201
       end
     end
   end
@@ -32,13 +33,12 @@ RSpec.describe API::V1::Users do
     let(:user){ FactoryGirl.create(:user) }
     context "when a valid email and access token are sent" do
       it "set cookies" do
-        user.regenerate_access_token
         get "/v1/users/auth", {email: user.email, access_token: user.access_token}
         expect(last_response.headers["Set-Cookie"].match("user_id=#{user.id}").nil?).to eq false
         expect(last_response.headers["Set-Cookie"].match("api_token=#{user.api_token}").nil?).to eq false
+        expect(last_response.status).to eq 302
       end
       it "redirects to home" do
-        user.regenerate_access_token
         get "/v1/users/auth", {email: user.email, access_token: user.access_token}
         expect(last_response.status).to eq 302
       end
@@ -48,6 +48,7 @@ RSpec.describe API::V1::Users do
       it "does not set cookies" do
         get "/v1/users/auth", {email: user.email, access_token: "123"}
         expect(last_response.headers["Set-Cookie"]).to be_nil
+        expect(last_response.status).to eq 302
       end
     end
   end

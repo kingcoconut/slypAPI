@@ -7,7 +7,7 @@ module API
       end
 
       resource :slyp_chat_messages do
-        desc "Return all of a users slyps"
+        desc "Return all of a users slypchats"
         params do
           requires :content, type: String
           requires :slyp_chat_id, type: Integer

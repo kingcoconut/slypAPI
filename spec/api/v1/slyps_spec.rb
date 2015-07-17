@@ -10,7 +10,7 @@ RSpec.describe API::V1::Slyps do
   describe "GET /v1/slyps" do
     let(:user){ FactoryGirl.create(:user, :with_slyps) }
     context "when cookie credentials are valid" do
-      it "returns all of the users slyps" do
+      it "returns all of the users slyps" do        
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
         get "/v1/slyps"
@@ -22,9 +22,44 @@ RSpec.describe API::V1::Slyps do
             expect(last_response.body.include?(s[attr].to_s)).to eq true
           end
         end
-
         expect(last_response.status).to eq 200
       end
     end
   end
+
+  describe "DELETE /v1/slyps" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }   
+    context "when cookie credentials are valid" do
+      before do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+      end
+      it "deletes the user_slyp id from db" do
+        slyp = user.slyps.first
+        delete "/v1/slyps/#{slyp.id}"
+        expect(user.slyps.first.id).to_not eq slyp.id
+      end
+
+      it "returns 400 bad request" do
+        delete "/v1/slyps/-1"
+        expect(last_response.status).to eq 400
+      end
+    end 
+  end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

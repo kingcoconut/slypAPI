@@ -13,20 +13,30 @@ RSpec.describe API::V1::SlypChats do
       before do
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
+        @slyp = user.slyps.first
+        get "/v1/slyp_chats", {slyp_id: @slyp.id}
       end
       it "returns the slyp chats and messages for the users slyp" do
-        slyp = user.slyps.first
-        get "/v1/slyp_chats", {slyp_id: slyp.id}
-
         # make sure all slyp_chats get loaded
-        expect(JSON.parse(last_response.body).map{|el| el["id"]}).to eq user.slyp_chats.where(slyp_id: slyp.id).map{|el| el.id}
+        expect(JSON.parse(last_response.body).map{|el| el["id"]}).to eq user.slyp_chats.where(slyp_id: @slyp.id).map{|el| el.id}
 
         # make sure all messages get loaded
-        user.slyp_chats.where(slyp_id: slyp.id).each do |sc|
+        user.slyp_chats.where(slyp_id: @slyp.id).each do |sc|
           sc.slyp_chat_messages.each do |m|
             expect(last_response.body.include?(m.content)).to eq true
           end
         end
+      end
+      it "returns user_id (s) of the slyp_chat" do
+        json_resp = JSON.parse(last_response.body)
+        users = json_resp.first["users"]
+        slyp_chat_id = json_resp.first["id"]
+        expect(users).to_not be_nil
+        users.each do |el|
+          user_id = el["id"] 
+          expect(SlypChatUser.where(user_id: user_id, slyp_chat_id: slyp_chat_id)).to_not be_nil
+        end
+
       end
 
       context "when slyp_id does not exist for the user" do

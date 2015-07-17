@@ -6,12 +6,18 @@ module API
         error!('Unauthorized', 401) unless current_user
       end
 
-      resource :slyps do
+      # resource :slyps do
         desc "Return all of a users slyps"
-        get do
+        get "slyps" do
           present current_user.slyps.order('createdon DESC')
         end
-      end
+
+        desc "Delete user_slyp record from user_slyp table"
+        delete "slyps/:id" do
+          error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
+          user_slyp.delete()
+        end
+      # end
     end
   end
 end
