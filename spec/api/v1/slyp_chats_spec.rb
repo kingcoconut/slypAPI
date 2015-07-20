@@ -78,9 +78,10 @@ RSpec.describe API::V1::SlypChats do
 
           #deleting created at because of a timestamp mismatch bug.. round all timestamps to 000Z
           res_json = JSON.parse(last_response.body).each {|el| el.delete "created_at"}
-          valid_json = JSON.parse([SlypChat::Entity.new(slyp_chat.reload)].to_json).each {|el| el.delete "created_at"}
 
-          expect(res_json).to eq valid_json
+          expect(res_json.first["id"].to_i).to eq slyp_chat.id
+          expect(res_json.first["slyp_id"].to_i).to eq slyp_chat.slyp_id
+          expect(res_json.first["users"].map{|el| el["id"].to_i}).to eq [recipient.id]
         end
       end
 
