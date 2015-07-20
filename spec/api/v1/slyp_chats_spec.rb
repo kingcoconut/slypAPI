@@ -92,6 +92,13 @@ RSpec.describe API::V1::SlypChats do
         end
       end
 
+      context "when the emails are not valid" do
+        it "returns a 400" do
+          post "/v1/slyp_chats", {slyp_id: user.slyps.first.id, emails: ["sjbjbsva", "afsafds"]}
+          expect(last_response.status).to eq 400
+        end
+      end
+
       context "when there are emails that do not exist" do
         let(:emails) { [Faker::Internet.email, Faker::Internet.email, FactoryGirl.create(:user).email] }
         it "creates the new users" do

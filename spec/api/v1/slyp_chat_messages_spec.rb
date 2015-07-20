@@ -33,6 +33,12 @@ RSpec.describe API::V1::SlypChatMessages do
         expect(last_response.status).to eq 400
       end
 
+      it "fails when content is an empty string" do
+        slyp_chat = user.slyp_chats.create(slyp_id: user.slyps.first.id)
+        post "/v1/slyp_chat_messages", {slyp_chat_id: slyp_chat.id, content: ""}
+        expect(last_response.status).to eq 400
+      end
+
       context "when the slyp_chat id does not exist" do
         it "returns a 400" do
           content = Faker::Lorem.sentence
