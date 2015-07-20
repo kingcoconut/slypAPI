@@ -15,6 +15,10 @@ module API
         post do
           # make sure the slyp belongs to the user
           error!('Bad Request', 400) unless current_user.slyps.where(id: params["slyp_id"]).first
+
+          #validate all emails
+          params["emails"].each {|email| error!('Bad Request', 400) if email.match(/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i).nil?}
+
           # create any users that don't already exist
           recipients = params["emails"].map{|email| User.find_or_create_by(email: email)}
           # send the slyps
