@@ -66,9 +66,21 @@ RSpec.describe API::V1::SlypChats do
         let(:recipient){ FactoryGirl.create(:user) }
 
         it "sends the slyps and returns 200" do
-          expect_any_instance_of(User).to receive(:send_slyp).with(slyp.id, recipient.id)
+          expect_any_instance_of(User).to receive(:send_slyp).with(slyp.id, recipient.id).and_call_original
           post "/v1/slyp_chats", {slyp_id: slyp.id, emails:[recipient.email]}
           expect(last_response.status).to eq 201
+        end
+
+        it "returns an array of the created slyp chats" do
+          post "/v1/slyp_chats", {slyp_id: slyp.id, emails:[recipient.email]}
+          recipient.reload
+          slyp_chat = recipient.slyp_chats.where(slyp_id: slyp.id).first
+
+          #deleting created at because of a timestamp mismatch bug.. round all timestamps to 000Z
+          res_json = JSON.parse(last_response.body).each {|el| el.delete "created_at"}
+          valid_json = JSON.parse([SlypChat::Entity.new(slyp_chat.reload)].to_json).each {|el| el.delete "created_at"}
+
+          expect(res_json).to eq valid_json
         end
       end
 

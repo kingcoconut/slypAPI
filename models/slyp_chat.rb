@@ -8,6 +8,7 @@ class SlypChat < ActiveRecord::Base
   class Entity < Grape::Entity
     expose :id
     expose :slyp_chat_messages
+    expose :created_at
     expose :users, using: User::Entity
   end
 end

@@ -32,6 +32,9 @@ class User < ActiveRecord::Base
       slyp_chat.slyp_chat_users.create(user_id: self.id)
       slyp_chat.slyp_chat_users.create(user_id: recipient_id)
       UserSlyp.create(user_id: recipient_id, slyp_id: slyp_id)
+    else
+      # TODO: this could be optimized with SQL
+      slyp_chat = self.slyp_chats.where(slyp_id: slyp_id).select {|sc| sc.users.map{|u| u.id }.include?(recipient_id)}.first
     end
 
     recipient = User.find(recipient_id)
@@ -50,6 +53,7 @@ class User < ActiveRecord::Base
         end
       end
     end
+    return slyp_chat
   end
 
   class Entity < Grape::Entity
