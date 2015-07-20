@@ -18,7 +18,8 @@ module API
           # create any users that don't already exist
           recipients = params["emails"].map{|email| User.find_or_create_by(email: email)}
           # send the slyps
-          recipients.each {|recipient| current_user.send_slyp(params["slyp_id"], recipient.id)}
+          new_chats = recipients.map {|recipient| current_user.send_slyp(params["slyp_id"], recipient.id)}
+          present new_chats
         end
 
         desc "Return all slyp chats for a slyp"

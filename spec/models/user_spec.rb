@@ -37,15 +37,14 @@ RSpec.describe User do
 
     it "creates a new slyp_chat for the two users" do
       slyp = user.slyps.first
-      user.send_slyp(slyp.id, recipient.id)
+      slyp_chat = user.send_slyp(slyp.id, recipient.id)
       slyp_chats = user.slyp_chats.where(slyp_id: slyp.id)
-      users = []
-      slyp_chats.each do |sc|
-        chat_users = sc.users
-        chat_users.delete(user)
-        users += chat_users
-      end
-      expect(users.map{|u| u.id}.include?(recipient.id)).to eq true
+
+      # make sure returned slyp_chat is valid
+      expect(slyp_chat.slyp_id).to eq slyp.id
+      chat_users = slyp_chat.users.map{|u| u.id}
+      expect(chat_users.include? recipient.id).to eq true
+      expect(chat_users.include? user.id).to eq true
     end
 
     it "adds the slyp to the recpients slyps" do
@@ -82,6 +81,20 @@ RSpec.describe User do
         end
 
         expect(users.select{|u| u.id == recipient.id }.length).to eq 1
+      end
+      it "returns the new slyp_chat" do
+        slyp = user.slyps.first
+
+        #send once
+        user.send_slyp(slyp.id, recipient.id)
+        #send slyp twice
+        slyp_chat = user.send_slyp(slyp.id, recipient.id)
+
+        # make sure returned slyp_chat is valid
+        expect(slyp_chat.slyp_id).to eq slyp.id
+        chat_users = slyp_chat.users.map{|u| u.id}
+        expect(chat_users.include? recipient.id).to eq true
+        expect(chat_users.include? user.id).to eq true
       end
     end
   end
