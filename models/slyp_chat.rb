@@ -9,6 +9,9 @@ class SlypChat < ActiveRecord::Base
     expose :id
     expose :slyp_chat_messages
     expose :created_at
-    expose :users, using: User::Entity
+    expose :slyp_id
+    expose :users, using: User::Entity do |slyp_chat, options|
+      slyp_chat.users.reject{|u| u.id == options[:env]["api.endpoint"].cookies["user_id"].to_i}
+    end
   end
 end
