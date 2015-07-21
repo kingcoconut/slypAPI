@@ -16,3 +16,12 @@ test:
   username: root
   pool: 50
   password:
+
+alpha:
+  adapter: mysql2
+  database: slyp_alpha
+  host: ec2-52-2-129-7.compute-1.amazonaws.com
+  username: root
+  pool: 50
+  password:
+
