@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
 
   before_validation :generate_api_token, on: :create
-  before_create :generate_access_token
+  before_create :generate_access_token, :generate_icon
 
   def generate_api_token
     self.api_token = SecureRandom.hex(10)
@@ -16,6 +16,10 @@ class User < ActiveRecord::Base
 
   def generate_access_token
     self.access_token = SecureRandom.hex(10)
+  end
+
+  def generate_icon
+    self.icon_url = IconService.generate_random
   end
 
   def regenerate_access_token
@@ -59,5 +63,6 @@ class User < ActiveRecord::Base
   class Entity < Grape::Entity
     expose :id
     expose :email
+    expose :icon_url
   end
 end

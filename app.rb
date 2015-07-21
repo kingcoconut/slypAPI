@@ -18,6 +18,9 @@ require_relative 'api/base'
 # Models
 Dir[Dir.pwd + "/models/**/*.rb"].each { |f| require f }
 
+# Services
+Dir[Dir.pwd + "/services/**/*.rb"].each { |f| require f }
+
 # Configs
 ENV['RACK_ENV'] ||= "development"
 dbconfig = YAML::load(File.open('config/database.yml'))
