@@ -8,6 +8,7 @@ gem 'mysql2'
 gem 'pry'
 gem 'rack-cors', :require => "rack/cors"
 gem 'mail'
+gem 'puma'
 
 group :test do
   gem 'rspec'
