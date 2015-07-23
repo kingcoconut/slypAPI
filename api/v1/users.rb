@@ -47,6 +47,24 @@ module API
           end
           redirect "http://dev.slyp.io/"
         end
+
+        get :friends do
+          error!('Unauthorized', 401) unless current_user
+          # sql = select distinct u.id, u.email from slyp_chat_users u1 join slyp_chat_users u2 on (u1.slyp_chat_id = u2.slyp_chat_id) join users u on (u2.user_id = u.id) where u1.user_id = 1 and u2.user_id <> 1;
+          sql = "select distinct u.id, u.email "\
+                "from slyp_chat_users u1 "\
+                "join slyp_chat_users u2 "\
+                "on (u1.slyp_chat_id = u2.slyp_chat_id) "\
+                "join users u "\
+                "on (u2.user_id = u.id) "\
+                "where u1.user_id = " + current_user.id.to_s + " and u2.user_id <> " + current_user.id.to_s + ";"
+          present ActiveRecord::Base.connection.select_all(sql)
+        end
+
+        get do
+          error!('Unauthorized', 401) unless current_user
+          present current_user
+        end
       end
 
       helpers do
