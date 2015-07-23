@@ -1,4 +1,4 @@
-require_relative 'app'
+require './app'
 require 'rack/cors'
 
 use Rack::Cors do

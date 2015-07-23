@@ -1,4 +1,4 @@
-require_relative 'user.rb'
+require './models/user.rb'
 
 class SlypChat < ActiveRecord::Base
   has_many :slyp_chat_messages

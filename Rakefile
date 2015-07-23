@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'grape/activerecord/rake'
-require_relative 'app'
+require './app'
 
 namespace :db do
   # Some db tasks require your app code to be loaded
