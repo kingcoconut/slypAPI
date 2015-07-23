@@ -9,7 +9,7 @@ module API
       # resource :slyps do
         desc "Return all of a users slyps"
         get "slyps" do
-          present current_user.slyps.order('createdon DESC')
+          present current_user.slyps.order('created_at DESC')
         end
 
         desc "Delete user_slyp record from user_slyp table"
