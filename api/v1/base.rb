@@ -1,6 +1,23 @@
+# this fixes this issue in grape 0.12.0
+# https://github.com/intridea/grape/pull/1045
+module Grape
+  module Middleware
+    class Base
+      def response
+        return @app_response if @app_response.is_a?(Rack::Response)
+        super
+      end
+    end
+  end
+end
+
 module API
   module V1
     class Base < Grape::API
+      # Setup Logging
+      logger.formatter = GrapeLogging::Formatters::Default.new
+      use GrapeLogging::Middleware::RequestLogger, { logger: logger }
+
       version 'v1'
       format :json
 
