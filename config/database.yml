@@ -20,8 +20,7 @@ test:
 alpha:
   adapter: mysql2
   database: slyp_alpha
-  host: ec2-52-2-129-7.compute-1.amazonaws.com
-  username: root
+  host: ip-172-31-43-151.ec2.internal
+  username: grape
   pool: 50
-  password:
-
+  password: UWAdQk2Iq0ENP36h
