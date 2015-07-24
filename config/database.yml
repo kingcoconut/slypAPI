@@ -20,7 +20,7 @@ test:
 alpha:
   adapter: mysql2
   database: slyp_alpha
-  host: ip-172-31-43-151.ec2.internal
+  host: 172.31.4.125
   username: grape
   pool: 50
-  password: UWAdQk2Iq0ENP36h
+  password: ykj2iLCUdivRcd3WWwQa

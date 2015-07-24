@@ -34,23 +34,6 @@ ActiveRecord::Schema.define(version: 20150720235412) do
     t.datetime "updated_at"
   end
 
-  create_table "slyps", force: :cascade do |t|
-    t.text     "url",         limit: 255,        null: false
-    t.text     "raw_url",     limit: 65535,      null: false
-    t.string   "slyp_type",   limit: 7
-    t.text     "title",       limit: 65535
-    t.text     "author",      limit: 255
-    t.date     "date"
-    t.datetime "createdon",                      null: false
-    t.text     "text",        limit: 4294967295
-    t.text     "description", limit: 65535
-    t.text     "summary",     limit: 65535
-    t.text     "top_image",   limit: 65535
-    t.text     "site_name",   limit: 65535
-    t.boolean  "has_video",   limit: 1
-    t.text     "video_url",   limit: 255
-  end
-
   create_table "user_slyps", force: :cascade do |t|
     t.integer  "slyp_id",    limit: 4
     t.integer  "user_id",    limit: 4
