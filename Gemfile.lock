@@ -65,6 +65,10 @@ GEM
     multi_json (1.11.2)
     multi_xml (0.5.5)
     mysql2 (0.3.18)
+    newrelic-grape (2.0.0)
+      grape
+      newrelic_rpm
+    newrelic_rpm (3.12.1.298)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -121,6 +125,8 @@ DEPENDENCIES
   grape_logging
   mail
   mysql2
+  newrelic-grape
+  newrelic_rpm
   pry
   puma
   rack-cors

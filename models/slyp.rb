@@ -17,5 +17,6 @@ class Slyp < ActiveRecord::Base
     expose :top_image
     expose :site_name
     expose :video_url
+    expose :created_at
   end
 end

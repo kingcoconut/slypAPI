@@ -6,6 +6,8 @@ require 'grape/activerecord'
 require 'yaml'
 require 'pry'
 require 'mail'
+require 'newrelic_rpm'
+require 'newrelic-grape'
 
 # API
 require './api/v1/users'
@@ -40,4 +42,3 @@ mail_options = { :address              => "smtp.gmail.com",
 Mail.defaults do
   delivery_method :smtp, mail_options
 end
-

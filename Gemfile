@@ -10,6 +10,8 @@ gem 'pry'
 gem 'rack-cors', :require => "rack/cors"
 gem 'mail'
 gem 'puma'
+gem 'newrelic_rpm'
+gem 'newrelic-grape'
 
 group :test do
   gem 'rspec'
