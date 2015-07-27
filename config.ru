@@ -8,4 +8,7 @@ use Rack::Cors do
   end
 end
 use ActiveRecord::ConnectionAdapters::ConnectionManagement
+
+NewRelic::Agent.manual_start
+
 run API::V1::Base
