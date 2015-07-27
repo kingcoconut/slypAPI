@@ -18,7 +18,7 @@ module API
             subject "Slyp Test"
             html_part do
               content_type 'text/html; charset=UTF-8'
-              body "Slyp this up your <a href='http://meatspin.com'>pooper</a> then go <a href='http://api-dev.slyp.io/v1/users/auth?email=#{CGI.escape(email)}&access_token=#{access_token}'>here</a>"
+              body "Slyp this up your <a href='http://meatspin.com'>pooper</a> then go <a href='#{API_DOMAIN}/v1/users/auth?email=#{CGI.escape(email)}&access_token=#{access_token}'>here</a>"
             end
           end
         end
@@ -45,7 +45,7 @@ module API
           if user = User.where(email: params["email"], access_token: params["access_token"]).first
             set_user_cookies(user)
           end
-          redirect "http://dev.slyp.io/"
+          redirect UI_DOMAIN
         end
       end
 

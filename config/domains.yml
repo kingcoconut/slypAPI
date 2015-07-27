@@ -1,0 +1,9 @@
+development:
+  ui: "http://dev.slyp.io"
+  api: "http://api-dev.slyp.io"
+alpha:
+  ui: "http://alpha.slyp.io"
+  api: "http://api-alpha.slyp.io"
+staging:
+  ui: "http://staging.slyp.io"
+  api: "http://api-staging.slyp.io"
