@@ -14,13 +14,6 @@ end
 module API
   module V1
     class Base < Grape::API
-      # Setup Logging
-      if ENV["RACK_ENV"] != "test"
-        # silence logs for rspec
-        logger.formatter = GrapeLogging::Formatters::Default.new
-        use GrapeLogging::Middleware::RequestLogger, { logger: logger }
-      end
-
       version 'v1'
       format :json
 
