@@ -40,7 +40,7 @@ RSpec.describe API::V1::Slyps do
         expect(user.slyps.first.id).to_not eq slyp.id
       end
 
-      it "returns 400 bad request" do
+      it "sends 400 bad request because slyp_id is invalid" do
         delete "/v1/slyps/-1"
         expect(last_response.status).to eq 400
       end
