@@ -29,6 +29,44 @@ RSpec.describe API::V1::Users do
     end
   end
 
+  describe "GET /v1/users" do
+    let(:user){ FactoryGirl.create(:user)}
+    context "when cookie credentials are valid" do
+      it "returns current user" do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+        get "/v1/users"
+        # binding.pry
+        js_resp = JSON.parse(last_response.body)
+        expect(js_resp["id"]).to eq user.id
+        expect(js_resp["email"]).to eq user.email
+        expect(js_resp["icon_url"]).to eq user.icon_url
+      end
+    end
+  end
+
+  describe "GET /v1/users/friends" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps_and_chats)}
+    context "when cookie credentials are valid" do
+      it "returns all of the user's friends" do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+        get "/v1/users/friends"
+
+        sql = "select distinct u.id, u.email "\
+              "from slyp_chat_users u1 "\
+              "join slyp_chat_users u2 "\
+              "on (u1.slyp_chat_id = u2.slyp_chat_id) "\
+              "join users u "\
+              "on (u2.user_id = u.id) "\
+              "where u1.user_id = " + user.id.to_s + " and u2.user_id <> " + user.id.to_s + ";"
+        friends = ActiveRecord::Base.connection.select_all(sql).as_json
+        friends_resp = JSON.parse(last_response.body)
+        expect(friends == friends_resp).to eq true
+      end
+    end
+  end
+
   describe "GET /v1/users/auth" do
     let(:user){ FactoryGirl.create(:user) }
     context "when a valid email and access token are sent" do

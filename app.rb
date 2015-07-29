@@ -1,5 +1,4 @@
 require 'grape'
-require 'grape_logging'
 require 'grape_entity'
 require 'active_record'
 require 'grape/activerecord'
