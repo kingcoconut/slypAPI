@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   before_validation :generate_api_token, on: :create
   before_create :generate_access_token, :generate_icon
 
+  @@api_domain = YAML::load(File.open('config/domains.yml'))[ENV['RACK_ENV']]["api"]
+
   def generate_api_token
     self.api_token = SecureRandom.hex(10)
   end
@@ -45,6 +47,7 @@ class User < ActiveRecord::Base
     email = recipient.email
     access_token = recipient.access_token
     sender_email = self.email
+
     if ENV['RACK_ENV'] != "test" && email.split("@")[1].match("example.com").nil?
       # this should be made into an async job
       mail = Mail.deliver do
@@ -53,7 +56,7 @@ class User < ActiveRecord::Base
         subject sender_email
         html_part do
           content_type 'text/html; charset=UTF-8'
-          body "#{sender_email} has sent you a slyp. <a href='http://api-dev.slyp.io/v1/users/auth?email=#{CGI.escape(email)}&access_token=#{access_token}'>Come on over and check it out!</a>"
+          body "#{sender_email} has sent you a slyp. <a href='http://#{@@api_domain}/v1/users/auth?email=#{CGI.escape(email)}&access_token=#{access_token}'>Come on over and check it out!</a>"
         end
       end
     end
