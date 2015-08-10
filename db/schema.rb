@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20150720235412) do
     t.text     "title",       limit: 65535
     t.text     "author",      limit: 255
     t.date     "date"
-    t.datetime "createdon",                      null: false
+    t.datetime "created_at",                     null: false
     t.text     "text",        limit: 4294967295
     t.text     "description", limit: 65535
     t.text     "summary",     limit: 65535
@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(version: 20150720235412) do
     t.text     "site_name",   limit: 65535
     t.boolean  "has_video"
     t.text     "video_url",   limit: 255
-    t.datetime "created_at",                     null: false
   end
   
   create_table "user_slyps", force: :cascade do |t|

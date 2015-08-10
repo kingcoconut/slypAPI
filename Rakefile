@@ -1,5 +1,7 @@
 require 'bundler/setup'
 require 'grape/activerecord/rake'
+
+ENV['RACK_ENV'] ||= "development"
 require './app'
 
 namespace :db do
