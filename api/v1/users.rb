@@ -10,17 +10,7 @@ module API
         end
         post do
           user = User.find_or_create_by(email: params["email"])
-          email = user.email
-          access_token = user.regenerate_access_token
-          mail = Mail.deliver do
-            from "Slyp <no-reply@slyp.io>"
-            to email
-            subject "Slyp Test"
-            html_part do
-              content_type 'text/html; charset=UTF-8'
-              body "Slyp this up your <a href='http://meatspin.com'>pooper</a> then go <a href='#{API_DOMAIN}/v1/users/auth?email=#{CGI.escape(email)}&access_token=#{access_token}'>here</a>"
-            end
-          end
+          SigninWorker.perform_async(user.email, user.regenerate_access_token)
         end
 
         desc "Creates a user with an email and facebook_id"
