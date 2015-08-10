@@ -32,11 +32,11 @@ ENV['RACK_ENV'] ||= "development"
 
 # DB config
 dbconfig = YAML::load(File.open('config/database.yml'))
-ActiveRecord::Base.establish_connection(dbconfig["development"])
+ActiveRecord::Base.establish_connection(dbconfig[ENV["RACK_ENV"]])
 ActiveRecord::Base.logger = nil
 
 #Domain
-domains = YAML::load(File.open('config/domains.yml'))["development"]
+domains = YAML::load(File.open('config/domains.yml'))[ENV["RACK_ENV"]]
 UI_DOMAIN = domains["ui"]
 API_DOMAIN = domains["api"]
 
