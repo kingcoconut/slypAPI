@@ -27,7 +27,7 @@ RSpec.describe API::V1::Slyps do
     end
   end
 
-  describe "DELETE /v1/slyps" do
+  describe "DELETE /v1/slyps/:id" do
     let(:user){ FactoryGirl.create(:user, :with_slyps) }   
     context "when cookie credentials are valid" do
       before do
@@ -46,20 +46,23 @@ RSpec.describe API::V1::Slyps do
       end
     end 
   end
+
+  describe "POST /v1/slyps/:id" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }   
+    context "when cookie credentials are valid" do
+      before do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+      end
+      it "updates the user_slyp model with engaged=true" do
+        slyp = user.slyps.first
+        post "/v1/slyps/#{slyp.id}"  
+        expect(user.user_slyps.where(slyp_id: slyp.id).first.engaged).to eq true
+      end
+      it "sends 400 bad request because slyp_id is invalid" do
+        delete "/v1/slyps/-1"
+        expect(last_response.status).to eq 400
+      end
+    end
+  end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

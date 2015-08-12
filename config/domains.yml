@@ -1,3 +1,6 @@
+test:
+  ui: "http://dev.slyp.io"
+  api: "http://api-dev.slyp.io"
 development:
   ui: "http://dev.slyp.io"
   api: "http://api-dev.slyp.io"

@@ -11,7 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150720235412) do
+ActiveRecord::Schema.define(version: 20150812023303) do
+
+  create_table "keywords", force: :cascade do |t|
+    t.string   "keyword",    limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "slyp_chat_messages", force: :cascade do |t|
     t.integer  "user_id",      limit: 4
@@ -26,9 +32,17 @@ ActiveRecord::Schema.define(version: 20150720235412) do
     t.integer  "slyp_chat_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "last_read_at",           default: '2000-01-01 08:00:00'
   end
 
   create_table "slyp_chats", force: :cascade do |t|
+    t.integer  "slyp_id",    limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "slyp_keywords", force: :cascade do |t|
+    t.integer  "keyword_id", limit: 4
     t.integer  "slyp_id",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -41,7 +55,7 @@ ActiveRecord::Schema.define(version: 20150720235412) do
     t.text     "title",       limit: 65535
     t.text     "author",      limit: 255
     t.date     "date"
-    t.datetime "createdon",                      null: false
+    t.datetime "created_at",                     null: false
     t.text     "text",        limit: 4294967295
     t.text     "description", limit: 65535
     t.text     "summary",     limit: 65535
@@ -49,7 +63,13 @@ ActiveRecord::Schema.define(version: 20150720235412) do
     t.text     "site_name",   limit: 65535
     t.boolean  "has_video"
     t.text     "video_url",   limit: 255
-    t.datetime "created_at",                     null: false
+    t.integer  "topic_id",    limit: 4
+  end
+
+  create_table "topics", force: :cascade do |t|
+    t.string   "topic",      limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "user_slyps", force: :cascade do |t|
@@ -57,6 +77,7 @@ ActiveRecord::Schema.define(version: 20150720235412) do
     t.integer  "user_id",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "engaged",              default: false
   end
 
   create_table "users", force: :cascade do |t|
