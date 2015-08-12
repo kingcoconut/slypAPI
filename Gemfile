@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'grape'
-gem 'grape_logging'
 gem 'grape-entity'
+gem 'grape-middleware-logger'
 gem 'activerecord'
 gem 'grape-activerecord'
 gem 'mysql2'
@@ -12,6 +12,7 @@ gem 'mail'
 gem 'puma'
 gem 'newrelic_rpm'
 gem 'newrelic-grape'
+gem 'sidekiq'
 
 group :test do
   gem 'rspec'

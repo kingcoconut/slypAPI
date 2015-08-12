@@ -7,6 +7,7 @@ require 'pry'
 require 'mail'
 require 'newrelic_rpm'
 require 'newrelic-grape'
+require 'sidekiq'
 
 # API
 require './api/v1/users'
@@ -20,6 +21,9 @@ require './api/base'
 # Models
 Dir[Dir.pwd + "/models/**/*.rb"].each { |f| require f }
 
+# Workers
+Dir[Dir.pwd + "/workers/**/*.rb"].each { |f| require f }
+
 # Services
 Dir[Dir.pwd + "/services/**/*.rb"].each { |f| require f }
 
@@ -28,11 +32,11 @@ ENV['RACK_ENV'] ||= "development"
 
 # DB config
 dbconfig = YAML::load(File.open('config/database.yml'))
-ActiveRecord::Base.establish_connection(dbconfig[ENV['RACK_ENV']])
+ActiveRecord::Base.establish_connection(dbconfig[ENV["RACK_ENV"]])
 ActiveRecord::Base.logger = nil
 
 #Domain
-domains = YAML::load(File.open('config/domains.yml'))[ENV['RACK_ENV']]
+domains = YAML::load(File.open('config/domains.yml'))[ENV["RACK_ENV"]]
 UI_DOMAIN = domains["ui"]
 API_DOMAIN = domains["api"]
 
@@ -48,3 +52,12 @@ mail_options = { :address              => "smtp.gmail.com",
 Mail.defaults do
   delivery_method :smtp, mail_options
 end
+
+# REDIS CONFIG
+# Sidekiq.configure_server do |config|
+#   config.redis = { url: 'redis://redis.example.com:7372/12' }
+# end
+
+# Sidekiq.configure_client do |config|
+#   config.redis = { url: 'redis://redis.example.com:7372/12' }
+# end

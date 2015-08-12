@@ -10,3 +10,6 @@ alpha:
 staging:
   ui: "http://staging.slyp.io"
   api: "http://api-staging.slyp.io"
+test:
+  ui: "http://test.slyp.io"
+  api: "http://api-test.slyp.io"
