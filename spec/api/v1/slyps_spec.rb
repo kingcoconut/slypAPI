@@ -47,7 +47,7 @@ RSpec.describe API::V1::Slyps do
     end 
   end
 
-  describe "POST /v1/slyps/:id" do
+  describe "GET /v1/slyps/engaged/:id" do
     let(:user){ FactoryGirl.create(:user, :with_slyps) }   
     context "when cookie credentials are valid" do
       before do
@@ -56,7 +56,7 @@ RSpec.describe API::V1::Slyps do
       end
       it "updates the user_slyp model with engaged=true" do
         slyp = user.slyps.first
-        post "/v1/slyps/#{slyp.id}"  
+        get "/v1/slyps/engaged/#{slyp.id}" 
         expect(user.user_slyps.where(slyp_id: slyp.id).first.engaged).to eq true
       end
       it "sends 400 bad request because slyp_id is invalid" do

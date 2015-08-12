@@ -18,7 +18,7 @@ module API
           user_slyp.delete()
         end
         desc "Mark user_slyps.engaged record as true"
-        post "slyps/:id" do 
+        get "slyps/engaged/:id" do 
           error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
           user_slyp.engaged = true    
           user_slyp.save()
