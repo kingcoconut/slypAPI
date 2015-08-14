@@ -12,7 +12,7 @@ RSpec.describe API::V1::Users do
     context "when the email does not exist yet" do
       it "creates the user and sends email" do
         expect(User.where(email: email).first).to be_nil
-        expect(Mail).to receive(:deliver) { nil }
+        expect(SigninWorker).to receive(:perform_async)
         post "/v1/users", {email: email}
         expect(User.where(email: email).first).to_not be_nil
         expect(last_response.status).to eq 201
@@ -22,7 +22,7 @@ RSpec.describe API::V1::Users do
     context "when the email does exist" do
       let(:user){ FactoryGirl.create(:user) }
       it "sends an email to the user with signin link" do
-        expect(Mail).to receive(:deliver) { nil }
+        expect(SigninWorker).to receive(:perform_async)
         post "/v1/users", {email: email}
         expect(last_response.status).to eq 201
       end

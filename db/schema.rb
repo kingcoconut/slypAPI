@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20150812023303) do
     t.text     "site_name",   limit: 65535
     t.boolean  "has_video"
     t.text     "video_url",   limit: 255
+    t.text     "topic",       limit: 255
     t.integer  "topic_id",    limit: 4
   end
 
