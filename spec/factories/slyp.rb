@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryGirl.define do #TODO: create and assign topic_id
   factory :slyp do
     sequence(:title) { |n| "Title-#{n}" }
     url { "https://google.com/#{SecureRandom.hex(8)}" }

@@ -3,4 +3,8 @@ class UserSlyp < ActiveRecord::Base
   belongs_to :slyp
 
   validates_uniqueness_of :user_id, scope: :slyp_id
+  
+  class Entity < Grape::Entity
+    expose :engaged
+  end
 end
