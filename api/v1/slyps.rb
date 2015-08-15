@@ -17,7 +17,11 @@ module API
           error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
           user_slyp.delete()
         end
-      # end
+        desc "Mark user_slyps.engaged record as true"
+        put "slyps/engaged/:id" do 
+          error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
+          user_slyp.update_attribute(:engaged, true)
+        end
     end
   end
 end
