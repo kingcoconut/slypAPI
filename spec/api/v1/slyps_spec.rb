@@ -28,7 +28,7 @@ RSpec.describe API::V1::Slyps do
           slyp_id = slyp["id"].to_s
           user_id = user.id.to_s
           #TODO: replace this sql with cleaner activerecord relational mapping utilities
-          sql = "select distinct U.email "\
+          sql = "select distinct U.id, U.email "\
           +"from slyp_chat_users SCU "\
           +"join users U "\
           +"on (SCU.user_id = U.id) "\
