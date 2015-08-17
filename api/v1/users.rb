@@ -10,7 +10,8 @@ module API
         end
         post do
           user = User.find_or_create_by(email: params["email"])
-          SigninWorker.perform_async(user.email, user.regenerate_access_token)
+          new_user = user.created_at > (Time.now - 60)         
+          SigninWorker.perform_async(user.email, user.regenerate_access_token, new_user)
         end
 
         desc "Creates a user with an email and facebook_id"
@@ -41,13 +42,13 @@ module API
         get :friends do
           error!('Unauthorized', 401) unless current_user
           # sql = select distinct u.id, u.email from slyp_chat_users u1 join slyp_chat_users u2 on (u1.slyp_chat_id = u2.slyp_chat_id) join users u on (u2.user_id = u.id) where u1.user_id = 1 and u2.user_id <> 1;
-          sql = "select distinct u.id, u.email "\
-                "from slyp_chat_users u1 "\
-                "join slyp_chat_users u2 "\
-                "on (u1.slyp_chat_id = u2.slyp_chat_id) "\
-                "join users u "\
-                "on (u2.user_id = u.id) "\
-                "where u1.user_id = " + current_user.id.to_s + " and u2.user_id <> " + current_user.id.to_s + ";"
+          sql = "select distinct U.id, U.email "\
+                "from slyp_chat_users SCU1 "\
+                "join slyp_chat_users SCU2 "\
+                "on (SCU1.slyp_chat_id = SCU2.slyp_chat_id) "\
+                "join users U "\
+                "on (SCU2.user_id = u.id) "\
+                "where SCU1.user_id = " + current_user.id.to_s + " and SCU2.user_id <> " + current_user.id.to_s + ";"
           present ActiveRecord::Base.connection.select_all(sql)
         end
 

@@ -25,8 +25,27 @@ RSpec.describe API::V1::Slyps do
         json_res = JSON.parse(last_response.body)
         json_res.each do |slyp|
           expect(slyp["engaged"]).to eq UserSlyp.where(slyp_id: slyp["id"], user_id: user.id).first.engaged
+          slyp_id = slyp["id"].to_s
+          user_id = user.id.to_s
+          #TODO: replace this sql with cleaner activerecord relational mapping utilities
+          sql = "select distinct U.id, U.email "\
+          +"from slyp_chat_users SCU "\
+          +"join users U "\
+          +"on (SCU.user_id = U.id) "\
+          +"where SCU.slyp_chat_id in ("\
+            +"select distinct SCU.slyp_chat_id "\
+            +"from slyp_chats SC "\
+            +"join slyp_chat_users SCU "\
+            +"on (SC.id = SCU.slyp_chat_id) "\
+            +"where SCU.user_id="+user_id+" and SC.slyp_id="+slyp_id+") "\
+          +"and U.id <> "+user_id
+          dbUsers = ActiveRecord::Base.connection.select_all(sql).rows
+          respUsers = slyp["users"]
+          expect(respUsers).to eq dbUsers
           expect(last_response.status).to eq 200
         end
+
+
       end
     end
   end
