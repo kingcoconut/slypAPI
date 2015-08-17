@@ -10,7 +10,8 @@ module API
         end
         post do
           user = User.find_or_create_by(email: params["email"])
-          SigninWorker.perform_async(user.email, user.regenerate_access_token)
+          new_user = user.created_at > (Time.now - 60)         
+          SigninWorker.perform_async(user.email, user.regenerate_access_token, new_user)
         end
 
         desc "Creates a user with an email and facebook_id"
