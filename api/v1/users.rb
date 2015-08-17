@@ -47,7 +47,7 @@ module API
                 "join slyp_chat_users SCU2 "\
                 "on (SCU1.slyp_chat_id = SCU2.slyp_chat_id) "\
                 "join users U "\
-                "on (SCU2.user_id = u.id) "\
+                "on (SCU2.user_id = U.id) "\
                 "where SCU1.user_id = " + current_user.id.to_s + " and SCU2.user_id <> " + current_user.id.to_s + ";"
           present ActiveRecord::Base.connection.select_all(sql)
         end
