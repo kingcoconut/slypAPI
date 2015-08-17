@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20150812023303) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
+  
   create_table "user_slyps", force: :cascade do |t|
     t.integer  "slyp_id",    limit: 4
     t.integer  "user_id",    limit: 4
