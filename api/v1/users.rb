@@ -41,14 +41,15 @@ module API
 
         get :friends do
           error!('Unauthorized', 401) unless current_user
-          # sql = select distinct u.id, u.email from slyp_chat_users u1 join slyp_chat_users u2 on (u1.slyp_chat_id = u2.slyp_chat_id) join users u on (u2.user_id = u.id) where u1.user_id = 1 and u2.user_id <> 1;
-          sql = "select distinct U.id, U.email "\
+          sql = "select U.id, U.email "\
                 "from slyp_chat_users SCU1 "\
                 "join slyp_chat_users SCU2 "\
                 "on (SCU1.slyp_chat_id = SCU2.slyp_chat_id) "\
                 "join users U "\
                 "on (SCU2.user_id = U.id) "\
-                "where SCU1.user_id = " + current_user.id.to_s + " and SCU2.user_id <> " + current_user.id.to_s + ";"
+                "where SCU1.user_id = " + current_user.id.to_s + " and SCU2.user_id <> " + current_user.id.to_s + " " +
+                "group by U.id, U.email "\
+                "order by count(*) desc;"
           present ActiveRecord::Base.connection.select_all(sql)
         end
 
