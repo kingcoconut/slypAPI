@@ -37,7 +37,7 @@ RSpec.describe User do
 
     it "creates a new slyp_chat for the two users" do
       slyp = user.slyps.first
-      slyp_chat = user.send_slyp(slyp.id, recipient.id)
+      slyp_chat = user.send_slyp(slyp.id, recipient.id, user.id)
       slyp_chats = user.slyp_chats.where(slyp_id: slyp.id)
 
       # make sure returned slyp_chat is valid
@@ -49,16 +49,16 @@ RSpec.describe User do
 
     it "adds the slyp to the recpients slyps" do
       slyp = user.slyps.first
-      user.send_slyp(slyp.id, recipient.id)
+      user.send_slyp(slyp.id, recipient.id, user.id)
       expect(recipient.slyps.map{|s| s.id}.include?(slyp.id)).to eq true
     end
 
     it "adds multiple slyps to the recpients slyps" do
       slyp = user.slyps.first
       slyp_two = user.slyps[1]
-      user.send_slyp(slyp.id, recipient.id)
+      user.send_slyp(slyp.id, recipient.id, user.id)
       user.reload
-      user.send_slyp(slyp_two.id, recipient.id)
+      user.send_slyp(slyp_two.id, recipient.id, user.id)
       expect(recipient.slyps.map{|s| s.id}.include?(slyp.id)).to eq true
       expect(recipient.slyps.map{|s| s.id}.include?(slyp_two.id)).to eq true
     end
@@ -68,9 +68,9 @@ RSpec.describe User do
         slyp = user.slyps.first
 
         #send slyp twice
-        user.send_slyp(slyp.id, recipient.id)
+        user.send_slyp(slyp.id, recipient.id, user.id)
         user.reload
-        user.send_slyp(slyp.id, recipient.id)
+        user.send_slyp(slyp.id, recipient.id, user.id)
 
         slyp_chats = user.slyp_chats.where(slyp_id: slyp.id)
         users = []
@@ -86,9 +86,9 @@ RSpec.describe User do
         slyp = user.slyps.first
 
         #send once
-        user.send_slyp(slyp.id, recipient.id)
+        user.send_slyp(slyp.id, recipient.id, user.id)
         #send slyp twice
-        slyp_chat = user.send_slyp(slyp.id, recipient.id)
+        slyp_chat = user.send_slyp(slyp.id, recipient.id, user.id)
 
         # make sure returned slyp_chat is valid
         expect(slyp_chat.slyp_id).to eq slyp.id

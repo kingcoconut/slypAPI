@@ -66,7 +66,7 @@ RSpec.describe API::V1::SlypChats do
         let(:recipient){ FactoryGirl.create(:user) }
 
         it "sends the slyps and returns 200" do
-          expect_any_instance_of(User).to receive(:send_slyp).with(slyp.id, recipient.id).and_call_original
+          expect_any_instance_of(User).to receive(:send_slyp).with(slyp.id, recipient.id, user.id).and_call_original
           post "/v1/slyp_chats", {slyp_id: slyp.id, emails:[recipient.email]}
           expect(last_response.status).to eq 201
         end

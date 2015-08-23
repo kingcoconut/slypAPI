@@ -10,7 +10,7 @@ RSpec.describe API::V1::Slyps do
   describe "GET /v1/slyps" do
     let(:user){ FactoryGirl.create(:user, :with_slyps) }
     context "when cookie credentials are valid" do
-      it "returns all of the users slyps" do        
+      it "returns all of the users slyps" do
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
         get "/v1/slyps"
