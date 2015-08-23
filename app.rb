@@ -41,12 +41,13 @@ UI_DOMAIN = domains["ui"]
 API_DOMAIN = domains["api"]
 
 # Email Configs
-mail_options = { :address              => "smtp.gmail.com",
-                  :port                 => 587,
-                  :domain               => 'slyp.io',
-                  :user_name            => 'xander@slyp.io',
-                  :password             => 'AlI31ngG94FOLeWVhlmo',
-                  :authentication       => 'plain',
+mailer = YAML::load(File.open('config/mailer.yml'))[ENV["RACK_ENV"]]
+mail_options = { :address              => mailer["address"],
+                  :port                 => mailer["port"],
+                  :domain               => mailer["domain"],
+                  :user_name            => mailer["user_name"],
+                  :password             => mailer["password"],
+                  :authentication       => mailer["authentication"],
                   :enable_starttls_auto => true
                 }
 Mail.defaults do

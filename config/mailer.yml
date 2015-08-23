@@ -1,0 +1,11 @@
+development:
+  address: localhost
+  port: 1025
+  domain: slyp.io
+alpha:
+  address: smtp.gmail.com
+  port: 587
+  domain: slyp.io
+  user_name: xander@slyp.io
+  password: AlI31ngG94FOLeWVhlmo
+  authentication: plain
