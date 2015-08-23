@@ -3,6 +3,7 @@ class EmailDigestWorker
   def perform
     User.all.each do |user|
       @slyps = generate_daily_digest(user)
+      # main slyp is the first larger image slyp on the email
       @main_slyp = @slyps.shift
       @link = [API_DOMAIN, '/v1/users/auth?email=', CGI.escape(user.email), '&access_token=', user.access_token].join('')
 
