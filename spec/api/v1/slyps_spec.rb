@@ -27,25 +27,26 @@ RSpec.describe API::V1::Slyps do
           expect(slyp["engaged"]).to eq UserSlyp.where(slyp_id: slyp["id"], user_id: user.id).first.engaged
           slyp_id = slyp["id"].to_s
           user_id = user.id.to_s
-          #TODO: replace this sql with cleaner activerecord relational mapping utilities
-          sql = "select distinct U.id, U.email "\
-          +"from slyp_chat_users SCU "\
-          +"join users U "\
-          +"on (SCU.user_id = U.id) "\
-          +"where SCU.slyp_chat_id in ("\
-            +"select distinct SCU.slyp_chat_id "\
-            +"from slyp_chats SC "\
-            +"join slyp_chat_users SCU "\
-            +"on (SC.id = SCU.slyp_chat_id) "\
-            +"where SCU.user_id="+user_id+" and SC.slyp_id="+slyp_id+") "\
-          +"and U.id <> "+user_id
+          sql = "select u.id, u.email, count(distinct scm.id) as unread_messages "\
+          +"from ( "\
+          +  "select scu.slyp_chat_id, scu.last_read_at "\
+          +    "from slyp_chats sc "\
+          +  "join slyp_chat_users scu "\
+          +  "on (sc.id = scu.slyp_chat_id) "\
+          +  "where scu.user_id = "+user_id+" and sc.slyp_id="+slyp_id+" "\
+          +") x "\
+          +"join slyp_chat_users scu "\
+          +"on (scu.slyp_chat_id = x.slyp_chat_id and scu.user_id <> "+user_id+") "\
+          +"join users u "\
+          +"on (scu.user_id = u.id) "\
+          +"left join slyp_chat_messages scm "\
+          +"on (scm.user_id = u.id and scm.slyp_chat_id = x.slyp_chat_id) "\
+          +"group by u.id, u.email; "
           dbUsers = ActiveRecord::Base.connection.select_all(sql).rows
           respUsers = slyp["users"]
           expect(respUsers).to eq dbUsers
           expect(last_response.status).to eq 200
         end
-
-
       end
     end
   end
