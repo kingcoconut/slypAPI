@@ -34,6 +34,7 @@ RSpec.describe User do
   describe "#send_slyp" do
     let(:user) { FactoryGirl.create(:user, :with_slyps)}
     let(:recipient) { FactoryGirl.create(:user, :with_slyps)}
+    let(:guest_recipient) { FactoryGirl.create(:user, :sign_in_count => 0)}
 
     it "creates a new slyp_chat for the two users" do
       slyp = user.slyps.first

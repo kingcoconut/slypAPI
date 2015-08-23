@@ -10,7 +10,7 @@ module API
         end
         post do
           user = User.find_or_create_by(email: params["email"])
-          new_user = user.created_at > (Time.now - 60)         
+          new_user = user.created_at > (Time.now - 60)
           SigninWorker.perform_async(user.email, user.regenerate_access_token, new_user)
         end
 
@@ -35,6 +35,7 @@ module API
         get :auth do
           if user = User.where(email: params["email"], access_token: params["access_token"]).first
             set_user_cookies(user)
+            user.increment!(:sign_in_count)
           end
           redirect UI_DOMAIN
         end

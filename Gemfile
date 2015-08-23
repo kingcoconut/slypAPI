@@ -13,6 +13,7 @@ gem 'puma'
 gem 'newrelic_rpm'
 gem 'newrelic-grape'
 gem 'sidekiq'
+gem 'whenever'
 
 group :test do
   gem 'rspec'

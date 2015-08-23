@@ -1,6 +1,6 @@
 class SigninWorker
   include Sidekiq::Worker
-  def perform(email, access_token, new_user)    
+  def perform(email, access_token, new_user)
     @name = email.split('@')[0]
     @link = [API_DOMAIN, '/v1/users/auth?email=', CGI.escape(email), '&access_token=', access_token].join('')
     if new_user

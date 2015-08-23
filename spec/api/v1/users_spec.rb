@@ -80,6 +80,13 @@ RSpec.describe API::V1::Users do
         get "/v1/users/auth", {email: user.email, access_token: user.access_token}
         expect(last_response.status).to eq 302
       end
+
+      it "increments user's sign in count by 1" do
+        current_count = user.sign_in_count
+        get "/v1/users/auth", {email: user.email, access_token: user.access_token}
+        user.reload
+        expect(user.sign_in_count).to eq current_count += 1
+      end
     end
 
     context "when invalid token is used" do
@@ -87,6 +94,12 @@ RSpec.describe API::V1::Users do
         get "/v1/users/auth", {email: user.email, access_token: "123"}
         expect(last_response.headers["Set-Cookie"]).to be_nil
         expect(last_response.status).to eq 302
+      end
+
+      it "does not increment user's sign in count" do
+        current_count = user.sign_in_count
+        get "/v1/users/auth", {email: user.email, access_token: "123"}
+        expect(user.sign_in_count).to eq current_count
       end
     end
   end
