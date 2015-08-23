@@ -17,16 +17,16 @@
                 <img src="<%= @main_slyp.top_image %>" class="CToWUd">
               </a>
               <h2 style="text-align:left!important;font-family:&quot;ff-tisa-web-pro&quot;,Georgia,Cambria,&quot;Times New Roman&quot;,Times,serif;font-size:32px;font-weight:300;line-height:36px;margin-bottom:0;margin-top:15px;margin-right:0;margin-left:0">
-                <a href="https://medium.com/@sharkyl/streaming-music-is-ripping-you-off-61dc501e7f94?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= main_slyp.title %></a>
+                <a href="https://medium.com/@sharkyl/streaming-music-is-ripping-you-off-61dc501e7f94?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= @main_slyp.title %></a>
               </h2>
               <h4 style="text-align:left!important;font-weight:300;font-size:18px;line-height:24px;margin-top:10px;margin-right:0;margin-bottom:10px;margin-left:0">
-                <a href="https://medium.com/@sharkyl/streaming-music-is-ripping-you-off-61dc501e7f94?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= main_slyp.site_name %></a>
+                <a href="https://medium.com/@sharkyl/streaming-music-is-ripping-you-off-61dc501e7f94?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= @main_slyp.site_name %></a>
               </h4>
               <p style="margin-top:5px;margin-bottom:5px;font-size:14px;line-height:20px;margin-right:0;margin-left:0">
-                <a href="https://medium.com/@sharkyl/streaming-music-is-ripping-you-off-61dc501e7f94?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= main_slyp.description %></a>
+                <a href="https://medium.com/@sharkyl/streaming-music-is-ripping-you-off-61dc501e7f94?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= @main_slyp.summary %></a>
               </p>
               <div style="color:#8e8e8e;margin-top:10px">
-                <div style="margin-bottom:10px;padding-bottom:10px;font-size:12px"><a href="https://medium.com/@sharkyl?source=email-ae92f66b75a8-1439907352527-daily_digest" style="color:#58ad69;text-decoration:none" target="_blank"><%= main_slyp.author %></a></div>
+                <div style="margin-bottom:10px;padding-bottom:10px;font-size:12px"><a href="https://medium.com/@sharkyl?source=email-ae92f66b75a8-1439907352527-daily_digest" style="color:#58ad69;text-decoration:none" target="_blank"><%= @main_slyp.author %></a></div>
               </div>
             </div>
             <% @slyps.each do |item| %>
@@ -38,7 +38,7 @@
                   <a href="https://medium.com/@aprilini/what-to-say-to-death-eddb6a6ff13c?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= item.title %></a>
                 </h2>
                 <h4 style="text-align:left!important;font-weight:300;font-size:14px;line-height:20px;margin-top:5px;margin-right:0;margin-bottom:5px;margin-left:0">
-                  <a href="https://medium.com/@aprilini/what-to-say-to-death-eddb6a6ff13c?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= item.description %></a>
+                  <a href="https://medium.com/@aprilini/what-to-say-to-death-eddb6a6ff13c?source=email-ae92f66b75a8-1439907352527-daily_digest&amp;sectionName=suggested" style="color:#333332;text-decoration:none" target="_blank"><%= item.summary %></a>
                 </h4>
                 <div style="color:#8e8e8e;margin-top:10px">
                   <div style="margin-bottom:10px;padding-bottom:10px;font-size:12px"><a href="<%= item.site_name %>" style="color:#58ad69;text-decoration:none" target="_blank"><%= item.site_name %></a></div>

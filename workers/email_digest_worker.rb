@@ -1,22 +1,38 @@
 class EmailDigestWorker
   include Sidekiq::Worker
-  def perform(email, access_token, slyp_list, top_slyp)
-    binding.pry
-    # @slyps = slyp_list
-    # @main_slyp = top_slyp
-    @link = [API_DOMAIN, '/v1/users/auth?email=', CGI.escape(email), '&access_token=', access_token].join('')
+  def perform
+    User.all.each do |user|
+      @slyps = generate_daily_digest(user)
+      @main_slyp = @slyps.shift
+      @link = [API_DOMAIN, '/v1/users/auth?email=', CGI.escape(user.email), '&access_token=', user.access_token].join('')
 
-    subject = "Slyp Daily Digest"
-    template = ERB.new(File.read('views/mailers/email_digest.html.erb')).result(binding)
+      subject = "Slyp Daily Digest"
+      template = ERB.new(File.read('views/mailers/email_digest.html.erb')).result(binding)
 
-    mail = Mail.deliver do
-      from "Slyp <no-reply@slyp.io>"
-      to email
-      subject subject
-      html_part do
-        content_type 'text/html; charset=UTF-8'
-        body template
+      mail = Mail.deliver do
+        from "Slyp <no-reply@slyp.io>"
+        to user.email
+        subject subject
+        html_part do
+          content_type 'text/html; charset=UTF-8'
+          body template
+        end
       end
     end
+  end
+
+  def generate_daily_digest(user)
+    slyp_list = []
+    user.slyps.each do | slyp |
+      if slyped_today(slyp) && !slyp.top_image.empty?
+        slyp_list << slyp
+      end
+    end
+    return slyp_list.first(5)
+  end
+
+  def slyped_today(slyp)
+    return true if slyp.created_at > Time.now.beginning_of_day && slyp.created_at < Time.now.end_of_day
+    false
   end
 end
