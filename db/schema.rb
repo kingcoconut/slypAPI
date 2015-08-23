@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150812023303) do
+ActiveRecord::Schema.define(version: 20150821071123) do
 
   create_table "keywords", force: :cascade do |t|
     t.string   "keyword",    limit: 255
@@ -63,7 +63,6 @@ ActiveRecord::Schema.define(version: 20150812023303) do
     t.text     "site_name",   limit: 65535
     t.boolean  "has_video"
     t.text     "video_url",   limit: 255
-    t.text     "topic",       limit: 255
     t.integer  "topic_id",    limit: 4
   end
 
@@ -72,13 +71,15 @@ ActiveRecord::Schema.define(version: 20150812023303) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-  
+
   create_table "user_slyps", force: :cascade do |t|
     t.integer  "slyp_id",    limit: 4
     t.integer  "user_id",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "engaged",              default: false
+    t.integer  "origin",     limit: 4
+    t.integer  "sender_id",  limit: 4
   end
 
   create_table "users", force: :cascade do |t|
