@@ -125,7 +125,9 @@ RSpec.describe API::V1::SlypChats do
 
       context "and everything else is valid" do
         it "marks the slyp_chat_user record as read" do
+          before_time = Time.now.utc.change(:usec => 0)
           post "/v1/slyp_chats/read", {slyp_chat_id: user.slyp_chats.first.id}
+          expect(user.slyp_chat_users.find_by(slyp_chat_id: user.slyp_chats.first.id).last_read_at).to be >= before_time
         end
       end
     end

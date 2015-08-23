@@ -37,12 +37,9 @@ module API
         end
 
         desc "Update slyp_chat_user.last_read_at record"
-        params do
-          requires :slyp_chat_id, type: Integer
-        end
-        post :read do
-          error!('Not Found', 404) unless SlypChatUser.where(user_id: current_user.id, id: params["slyp_chat_id"]).first
-          current_user.slyp_chat_users.find_by(slyp_chat_id: params["slyp_chat_id"]).update(last_read_at: Time.now)
+        put "read/:id" do
+          error!('Not Found', 404) unless SlypChatUser.where(user_id: current_user.id, slyp_chat_id: params["id"]).first
+          current_user.slyp_chat_users.find_by(slyp_chat_id: params["id"]).update(last_read_at: Time.now)
         end
 
       end
