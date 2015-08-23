@@ -30,7 +30,7 @@ class Slyp < ActiveRecord::Base
   end
 
   def get_unread_messages_count(user_id)
-    sql = "select count(scm.id) "\
+    sql = "select count(scm.id) unread_messages "\
           +"from slyp_chats sc "\
           +"join slyp_chat_users scu "\
           +"on (sc.id = scu.slyp_chat_id) "\
