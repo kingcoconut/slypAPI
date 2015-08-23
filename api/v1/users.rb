@@ -35,6 +35,7 @@ module API
         get :auth do
           if user = User.where(email: params["email"], access_token: params["access_token"]).first
             set_user_cookies(user)
+            user.increment!(:sign_in_count)
           end
           redirect UI_DOMAIN
         end

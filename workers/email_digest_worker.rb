@@ -24,16 +24,14 @@ class EmailDigestWorker
 
   def generate_daily_digest(user)
     slyp_list = []
-    user.slyps.each do | slyp |
-      if slyped_today(slyp) && !slyp.top_image.empty?
-        slyp_list << slyp
-      end
+    user.slyps.where("created_at > ? AND top_image != ?", today, '' ).limit(5).each do | slyp |
+      slyp_list << slyp
     end
-    return slyp_list.first(5)
+    return slyp_list
   end
 
-  def slyped_today(slyp)
-    return true if slyp.created_at > Time.now.beginning_of_day && slyp.created_at < Time.now.end_of_day
-    false
+  def today
+    Time.now.beginning_of_day
   end
+
 end

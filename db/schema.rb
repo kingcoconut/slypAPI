@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150812023303) do
+ActiveRecord::Schema.define(version: 20150823011507) do
 
   create_table "keywords", force: :cascade do |t|
     t.string   "keyword",    limit: 255
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20150812023303) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-  
+
   create_table "user_slyps", force: :cascade do |t|
     t.integer  "slyp_id",    limit: 4
     t.integer  "user_id",    limit: 4
@@ -91,6 +91,8 @@ ActiveRecord::Schema.define(version: 20150812023303) do
     t.datetime "updated_at"
     t.string   "access_token",      limit: 255
     t.string   "icon_url",          limit: 255
+    t.integer  "sign_in_count",     limit: 4,   default: 0
+    t.datetime "last_emailed_at"
   end
 
 end

@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :user do
     sequence(:email) { |n| "test#{n}+#{Faker::Internet.email}" }
     name { Faker::Name.name }
+    sign_in_count { 1 }
 
     trait :with_slyps do
       after(:create) do |user|

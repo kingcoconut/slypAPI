@@ -44,12 +44,19 @@ class User < ActiveRecord::Base
     end
 
     recipient = User.find(recipient_id)
-
     if ENV['RACK_ENV'] != "test" && email.split("@")[1].match("example.com").nil?
-      # this should be made into an async job
-      SendSlypWorker.perform_async(self.email, recipient.email, recipient.access_token, @@api_domain)
+      if recipient.sign_in_count == 0 && recipient.not_emailed_today
+        recipient.update(last_emailed_at: Time.now)
+        SendSlypWorker.perform_async(self.email, recipient.email, recipient.access_token, @@api_domain)
+      end
     end
     return slyp_chat
+  end
+
+  def not_emailed_today
+    return true if last_emailed_at.nil?
+    return true if last_emailed_at > Time.now.beginning_of_day
+    false
   end
 
   class Entity < Grape::Entity
