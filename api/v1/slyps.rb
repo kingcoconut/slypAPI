@@ -22,6 +22,26 @@ module API
           error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
           user_slyp.update_attribute(:engaged, true)
         end
+        desc "Mark user_slyps.loved record as true"
+        put "slyps/loved/:id" do
+          error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
+          user_slyp.update_attribute(:loved, true)
+        end
+        desc "Mark user_slyps.loved record as false"
+        put "slyps/unloved/:id" do
+          error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
+          user_slyp.update_attribute(:loved, false)
+        end
+        desc "Mark user_slyps.archived record as true"
+        put "slyps/archived/:id" do
+          error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
+          user_slyp.update_attribute(:archived, true)
+        end
+        desc "Mark user_slyps.archived record as false"
+        put "slyps/unarchived/:id" do
+          error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
+          user_slyp.update_attribute(:archived, false)
+        end
     end
   end
 end
