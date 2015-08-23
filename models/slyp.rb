@@ -37,7 +37,7 @@ class Slyp < ActiveRecord::Base
           +"join slyp_chat_messages scm "\
           +"on (scm.slyp_chat_id = sc.id) "\
           +"where scu.user_id = "+user_id+" and sc.slyp_id = "+self.id.to_s+" and scm.user_id <> "+user_id+" and scm.created_at > scu.last_read_at; "
-    return ActiveRecord::Base.connection.select_all(sql)
+    return ActiveRecord::Base.connection.select_all(sql).first()["unread_messages"]
   end
 
   class Entity < Grape::Entity

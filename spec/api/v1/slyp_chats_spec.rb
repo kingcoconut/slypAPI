@@ -114,4 +114,21 @@ RSpec.describe API::V1::SlypChats do
       end
     end
   end
+
+  describe "POST /v1/slyp_chats/read" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps_and_chats) }
+    context "when cookie credentials are valid" do
+      before do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+      end
+
+      context "and everything else is valid" do
+        it "marks the slyp_chat_user record as read" do
+          post "/v1/slyp_chats/read", {slyp_chat_id: user.slyp_chats.first.id}
+        end
+      end
+    end
+  end
+
 end
