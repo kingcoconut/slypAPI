@@ -11,18 +11,33 @@ class Slyp < ActiveRecord::Base
   enum slyp_type: [:video, :article]
 
   def get_friends(user_id)
-    sql = "select distinct U.id, U.email "\
-      +"from slyp_chat_users SCU "\
-      +"join users U "\
-      +"on (SCU.user_id = U.id) "\
-      +"where SCU.slyp_chat_id in ("\
-        +"select distinct SCU.slyp_chat_id "\
-        +"from slyp_chats SC "\
-        +"join slyp_chat_users SCU "\
-        +"on (SC.id = SCU.slyp_chat_id) "\
-        +"where SCU.user_id="+user_id+" and SC.slyp_id="+self.id.to_s+") "\
-      +"and U.id <> "+user_id
-      return ActiveRecord::Base.connection.select_all(sql)
+    sql = "select u.id, u.email, count(distinct scm.id) as unread_messages "\
+          +"from ( "\
+          +  "select scu.slyp_chat_id, scu.last_read_at "\
+          +    "from slyp_chats sc "\
+          +  "join slyp_chat_users scu "\
+          +  "on (sc.id = scu.slyp_chat_id) "\
+          +  "where scu.user_id = "+user_id+" and sc.slyp_id="+self.id.to_s+" "\
+          +") x "\
+          +"join slyp_chat_users scu "\
+          +"on (scu.slyp_chat_id = x.slyp_chat_id and scu.user_id <> "+user_id+") "\
+          +"join users u "\
+          +"on (scu.user_id = u.id) "\
+          +"left join slyp_chat_messages scm "\
+          +"on (scm.user_id = u.id and scm.slyp_chat_id = x.slyp_chat_id) "\
+          +"group by u.id, u.email; "
+    return ActiveRecord::Base.connection.select_all(sql)
+  end
+
+  def get_unread_messages_count(user_id)
+    sql = "select count(scm.id) "\
+          +"from slyp_chats sc "\
+          +"join slyp_chat_users scu "\
+          +"on (sc.id = scu.slyp_chat_id) "\
+          +"join slyp_chat_messages scm "\
+          +"on (scm.slyp_chat_id = sc.id) "\
+          +"where scu.user_id = "+user_id+" and sc.slyp_id = "+self.id.to_s+" and scm.user_id <> "+user_id+" and scm.created_at > scu.last_read_at; "
+    return ActiveRecord::Base.connection.select_all(sql)
   end
 
   class Entity < Grape::Entity
@@ -46,7 +61,10 @@ class Slyp < ActiveRecord::Base
     expose :users do |slyp, options|
       user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
       slyp.get_friends(user_id)
-      
+    end
+    expose :unread_messages do |slyp, options|
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
+      slyp.get_unread_messages_count(user_id)
     end
   end
 end
