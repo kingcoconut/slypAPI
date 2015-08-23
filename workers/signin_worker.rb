@@ -10,6 +10,9 @@ class SigninWorker
       subject = "Welcome back"
       template = ERB.new(File.read('views/mailers/login.html.erb')).result(binding)
     end
+    if ENV['RACK_ENV'] == "development"
+        puts @link
+    end
     mail = Mail.deliver do
       from "Slyp <no-reply@slyp.io>"
       to email
