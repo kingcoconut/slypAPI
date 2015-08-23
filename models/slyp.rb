@@ -1,5 +1,6 @@
 require './models/user_slyp.rb'
 require './models/user.rb'
+require './models/topic.rb'
 
 
 class Slyp < ActiveRecord::Base
@@ -40,6 +41,10 @@ class Slyp < ActiveRecord::Base
     return ActiveRecord::Base.connection.select_all(sql).first()["unread_messages"]
   end
 
+  def get_user_slyp(user_id)
+    return UserSlyp.find_by(slyp_id: self.id, user_id: user_id)
+  end
+
   class Entity < Grape::Entity
     expose :id
     expose :title
@@ -54,9 +59,10 @@ class Slyp < ActiveRecord::Base
     expose :site_name
     expose :video_url
     expose :created_at
-    expose :topic
+    expose :topic, using: Topic::Entity
     expose :engaged do |slyp, options|
-      UserSlyp.find_by(slyp_id: slyp.id, user_id: options[:env]["api.endpoint"].cookies["user_id"].to_i).engaged
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
+      slyp.get_user_slyp(user_id).engaged
     end
     expose :users do |slyp, options|
       user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
@@ -66,8 +72,10 @@ class Slyp < ActiveRecord::Base
       user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
       slyp.get_unread_messages_count(user_id)
     end
-    expose :origin do |slyp, options|
-      UserSlyp.find_by(slyp_id: slyp.id, user_id: options[:env]["api.endpoint"].cookies["user_id"].to_i).origin
+    expose :sender, using: User::Entity do |slyp, options|
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
+      sender_id = slyp.get_user_slyp(user_id).sender_id
+      User.find_by(id: sender_id)
     end
   end
 end

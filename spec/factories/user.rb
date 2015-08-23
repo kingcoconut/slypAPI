@@ -19,7 +19,7 @@ FactoryGirl.define do
           slyp = FactoryGirl.create(:slyp)
           to_user = FactoryGirl.create(:user)
 
-          UserSlyp.create(user_id: user.id, slyp_id: slyp.id)
+          UserSlyp.create(user_id: user.id, slyp_id: slyp.id, sender_id: user.id)
           slyp_chat = user.slyp_chats.create(slyp_id: slyp.id)
           slyp_chat.slyp_chat_messages.create(user_id: user.id, content: Faker::Lorem.sentence)
           SlypChatUser.create(user_id: to_user.id, slyp_chat_id: slyp_chat.id)

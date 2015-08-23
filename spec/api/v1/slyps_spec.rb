@@ -8,24 +8,34 @@ RSpec.describe API::V1::Slyps do
   end
 
   describe "GET /v1/slyps" do
-    let(:user){ FactoryGirl.create(:user, :with_slyps) }
+    let(:user){ FactoryGirl.create(:user, :with_slyps_and_chats) }
     context "when cookie credentials are valid" do
       it "returns all of the users slyps" do
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
         get "/v1/slyps"
 
-        # make sure all expected values are exposed
-        expected_attrs = [:id, :title, :url, :raw_url, :author, :date, :text, :summary, :description, :top_image, :site_name, :video_url, :topic_id, :unread_messgages]
-        expected_attrs.each do |attr|
-          user.slyps.each do |slyp|
-            expect(last_response.body.include?(slyp[attr].to_s)).to eq true
+        json_res = JSON.parse(last_response.body)
+
+        # check slyp model's native values
+        native_attrs = [:id, :title, :url, :raw_url, :author, :text, :summary, :description, :top_image, :site_name, :video_url] # haven't included datetime stamps, messy comparisons
+        json_res.each do |rSlyp|
+          uSlyp = user.slyps.find_by(id: rSlyp["id"])
+          native_attrs.each do |attr|
+            expect(rSlyp[attr.to_s]).to eq uSlyp[attr]
           end
         end
-        json_res = JSON.parse(last_response.body)
-        json_res.each do |slyp|
-          expect(slyp["engaged"]).to eq UserSlyp.where(slyp_id: slyp["id"], user_id: user.id).first.engaged
-          slyp_id = slyp["id"].to_s
+
+        # check slyp model's derived values
+        derived_attrs = [:topic, :engaged, :users, :unread_messgages, :sender]
+
+        json_res.each do |rSlyp|
+          # :engaged
+          expect(rSlyp["engaged"]).to eq UserSlyp.where(slyp_id: rSlyp["id"], user_id: user.id).first.engaged
+
+          # :users
+          rUsers = rSlyp["users"]
+          slyp_id = rSlyp["id"].to_s
           user_id = user.id.to_s
           sql = "select u.id, u.email, count(distinct scm.id) as unread_messages "\
           +"from ( "\
@@ -42,9 +52,30 @@ RSpec.describe API::V1::Slyps do
           +"left join slyp_chat_messages scm "\
           +"on (scm.user_id = u.id and scm.slyp_chat_id = x.slyp_chat_id) "\
           +"group by u.id, u.email; "
-          dbUsers = ActiveRecord::Base.connection.select_all(sql).rows
-          respUsers = slyp["users"]
-          expect(respUsers).to eq dbUsers
+          dbUsers = ActiveRecord::Base.connection.select_all(sql).to_hash
+          expect(rUsers).to eq dbUsers
+
+          # :unread_messages
+          rUnread = rSlyp["unread_messages"]
+          sql = "select count(scm.id) unread_messages "\
+                +"from slyp_chats sc "\
+                +"join slyp_chat_users scu "\
+                +"on (sc.id = scu.slyp_chat_id) "\
+                +"join slyp_chat_messages scm "\
+                +"on (scm.slyp_chat_id = sc.id) "\
+                +"where scu.user_id = "+user_id+" and sc.slyp_id = "\
+                +slyp_id+" and scm.user_id <> "\
+                +user_id+" and scm.created_at > scu.last_read_at; "
+          dbUnread = ActiveRecord::Base.connection.select_all(sql).first()["unread_messages"]
+          expect(rUnread).to eq dbUnread
+
+          # :sender
+          rSender = rSlyp["sender"]
+          sender_id = UserSlyp.find_by(slyp_id: rSlyp["id"], user_id: user.id).sender_id
+          dbSender = User.find_by(id: sender_id)
+          expect(rSender["id"]).to eq dbSender.id
+          expect(rSender["email"]).to eq dbSender.email
+
           expect(last_response.status).to eq 200
         end
       end
