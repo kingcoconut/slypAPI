@@ -1,0 +1,8 @@
+language: ruby
+cache: bundler
+bundler_args: --without production development
+before_script:
+  - RACK_ENV=test bundle exec rake db:create db:schema:load
+env:
+  global:
+  - CI=true
