@@ -29,5 +29,4 @@ class EmailDigestWorker
     end
     return slyp_list
   end
-
 end
