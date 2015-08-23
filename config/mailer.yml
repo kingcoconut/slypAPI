@@ -1,4 +1,6 @@
-development:
+test:
+  default: << development
+development: &development
   address: localhost
   port: 1025
   domain: slyp.io

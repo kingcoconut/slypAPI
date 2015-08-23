@@ -56,7 +56,7 @@ class Slyp < ActiveRecord::Base
     expose :created_at
     expose :topic
     expose :engaged do |slyp, options|
-      UserSlyp.where(slyp_id: slyp.id, user_id: options[:env]["api.endpoint"].cookies["user_id"].to_i).first.engaged
+      UserSlyp.detect(slyp_id: slyp.id, user_id: options[:env]["api.endpoint"].cookies["user_id"].to_i).engaged
     end
     expose :users do |slyp, options|
       user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
@@ -67,7 +67,7 @@ class Slyp < ActiveRecord::Base
       slyp.get_unread_messages_count(user_id)
     end
     expose :origin do |slyp, options|
-      UserSlyp.where(slyp_id: slyp.id, user_id: options[:env]["api.endpoint"].cookies["user_id"].to_i).first.origin
+      UserSlyp.detect(slyp_id: slyp.id, user_id: options[:env]["api.endpoint"].cookies["user_id"].to_i).origin
     end
   end
 end
