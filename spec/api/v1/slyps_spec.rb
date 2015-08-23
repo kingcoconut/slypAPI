@@ -16,7 +16,7 @@ RSpec.describe API::V1::Slyps do
         get "/v1/slyps"
 
         # make sure all expected values are exposed
-        expected_attrs = [:id, :title, :url, :raw_url, :author, :date, :text, :summary, :description, :top_image, :site_name, :video_url, :topic_id]
+        expected_attrs = [:id, :title, :url, :raw_url, :author, :date, :text, :summary, :description, :top_image, :site_name, :video_url, :topic_id, :unread_messgages]
         expected_attrs.each do |attr|
           user.slyps.each do |slyp|
             expect(last_response.body.include?(slyp[attr].to_s)).to eq true
