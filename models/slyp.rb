@@ -66,6 +66,9 @@ class Slyp < ActiveRecord::Base
       user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
       slyp.get_unread_messages_count(user_id)
     end
+    expose :origin do |slyp, options|
+      UserSlyp.where(slyp_id: slyp.id, user_id: options[:env]["api.endpoint"].cookies["user_id"].to_i).first.origin
+    end
   end
 end
 
