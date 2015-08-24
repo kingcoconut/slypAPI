@@ -11,7 +11,10 @@ module API
         get "slyps" do
           present current_user.slyps.order('created_at DESC')
         end
+        desc "Creates a user_slyp record"
+        post "slyps/:id" do
 
+        end
         desc "Delete user_slyp record from user_slyp table"
         delete "slyps/:id" do
           error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
