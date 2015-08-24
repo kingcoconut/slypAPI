@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20150823180954) do
     t.integer  "slyp_chat_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "last_read_at",           default: '2000-01-01 08:00:00'
+    t.datetime "last_read_at",           default: '2000-01-01 00:00:00'
   end
 
   create_table "slyp_chats", force: :cascade do |t|
@@ -55,7 +55,6 @@ ActiveRecord::Schema.define(version: 20150823180954) do
     t.text     "title",       limit: 65535
     t.text     "author",      limit: 255
     t.date     "date"
-    t.datetime "created_at",                     null: false
     t.text     "text",        limit: 4294967295
     t.text     "description", limit: 65535
     t.text     "summary",     limit: 65535
@@ -63,6 +62,7 @@ ActiveRecord::Schema.define(version: 20150823180954) do
     t.text     "site_name",   limit: 65535
     t.boolean  "has_video"
     t.text     "video_url",   limit: 255
+    t.datetime "created_at",                     null: false
     t.text     "topic",       limit: 255
     t.integer  "topic_id",    limit: 4
   end
