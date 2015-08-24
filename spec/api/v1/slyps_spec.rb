@@ -24,7 +24,7 @@ RSpec.describe API::V1::Slyps do
         date_attrs = [:created_at]
         before_time = Time.now.utc.change(:usec => 0)
         new_slyp = FactoryGirl.create(:slyp)
-        # TODO: check created_at for slyp
+        # TODO: check created_at for slyp        
 
         # check slyp model's native values
         native_attrs = [:id, :title, :url, :raw_url, :author, :text, :summary, :description, :top_image, :site_name, :video_url] # haven't included datetime stamps, messy comparisons
@@ -87,6 +87,14 @@ RSpec.describe API::V1::Slyps do
 
           expect(last_response.status).to eq 200
         end
+      end
+      it "adds messages to slyp_chat, engages it, then adds more" do
+        slyp_chat_id = user.slyp_chats.first.id
+        10.times do 
+          post "/v1/slyp_chat_messages", {content: "foobar", slyp_chat_id: slyp_chat_id}
+        end
+        get "/v1/slyps"
+        binding.pry
       end
     end
   end
