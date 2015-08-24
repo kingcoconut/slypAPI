@@ -13,7 +13,7 @@ on (scu.slyp_chat_id = x.slyp_chat_id and scu.user_id <> 2)
 join users u
 on (scu.user_id = u.id) 
 left join slyp_chat_messages scm
-on (scm.user_id = u.id and scm.slyp_chat_id = x.slyp_chat_id)
+on (scm.user_id = u.id and scm.slyp_chat_id = x.slyp_chat_id and scm.created_at >= x.last_read_at)
 group by u.id, u.email;
 
 

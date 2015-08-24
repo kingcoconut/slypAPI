@@ -10,12 +10,21 @@ RSpec.describe API::V1::Slyps do
   describe "GET /v1/slyps" do
     let(:user){ FactoryGirl.create(:user, :with_slyps_and_chats) }
     context "when cookie credentials are valid" do
-      it "returns all of the users slyps" do
+      before do
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
+      end
+
+      it "returns all of the users slyps" do
         get "/v1/slyps"
 
         json_res = JSON.parse(last_response.body)
+
+        # check slyp model's date values
+        date_attrs = [:created_at]
+        before_time = Time.now.utc.change(:usec => 0)
+        new_slyp = FactoryGirl.create(:slyp)
+        # TODO: check created_at for slyp
 
         # check slyp model's native values
         native_attrs = [:id, :title, :url, :raw_url, :author, :text, :summary, :description, :top_image, :site_name, :video_url] # haven't included datetime stamps, messy comparisons
