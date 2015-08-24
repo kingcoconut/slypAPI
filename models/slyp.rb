@@ -12,7 +12,7 @@ class Slyp < ActiveRecord::Base
   enum slyp_type: [:video, :article]
 
   def get_friends(user_id)
-    sql = "select u.id, u.email, count(distinct scm.id) as unread_messages "\
+    sql = "select u.id, u.email, x.slyp_chat_id, count(distinct scm.id) as unread_messages "\
           +"from ( "\
           +  "select scu.slyp_chat_id, scu.last_read_at "\
           +    "from slyp_chats sc "\
