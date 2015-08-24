@@ -12,7 +12,7 @@ class Slyp < ActiveRecord::Base
   enum slyp_type: [:video, :article]
 
   def get_friends(user_id)
-    sql = "select u.id, u.email, count(distinct scm.id) as unread_messages "\
+    sql = "select u.id, u.email, x.slyp_chat_id, count(distinct scm.id) as unread_messages "\
           +"from ( "\
           +  "select scu.slyp_chat_id, scu.last_read_at "\
           +    "from slyp_chats sc "\
@@ -25,7 +25,7 @@ class Slyp < ActiveRecord::Base
           +"join users u "\
           +"on (scu.user_id = u.id) "\
           +"left join slyp_chat_messages scm "\
-          +"on (scm.user_id = u.id and scm.slyp_chat_id = x.slyp_chat_id) "\
+          +"on (scm.user_id = u.id and scm.slyp_chat_id = x.slyp_chat_id and scm.created_at >= x.last_read_at) "\
           +"group by u.id, u.email; "
     return ActiveRecord::Base.connection.select_all(sql)
   end
@@ -58,7 +58,10 @@ class Slyp < ActiveRecord::Base
     expose :top_image
     expose :site_name
     expose :video_url
-    expose :created_at
+    expose :created_at do |slyp, options|
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
+      slyp.get_user_slyp(user_id).created_at
+    end
     expose :topic, using: Topic::Entity
     expose :engaged do |slyp, options|
       user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i

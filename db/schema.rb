@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150823180954) do
+ActiveRecord::Schema.define(version: 20150823200441) do
 
   create_table "keywords", force: :cascade do |t|
     t.string   "keyword",    limit: 255
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(version: 20150823180954) do
     t.datetime "updated_at"
     t.boolean  "engaged",              default: false
     t.integer  "sender_id",  limit: 4
+    t.boolean  "loved",                default: false
+    t.boolean  "archived",             default: false
   end
 
   create_table "users", force: :cascade do |t|

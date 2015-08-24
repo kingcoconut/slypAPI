@@ -10,12 +10,21 @@ RSpec.describe API::V1::Slyps do
   describe "GET /v1/slyps" do
     let(:user){ FactoryGirl.create(:user, :with_slyps_and_chats) }
     context "when cookie credentials are valid" do
-      it "returns all of the users slyps" do
+      before do
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
+      end
+
+      it "returns all of the users slyps" do
         get "/v1/slyps"
 
         json_res = JSON.parse(last_response.body)
+
+        # check slyp model's date values
+        date_attrs = [:created_at]
+        before_time = Time.now.utc.change(:usec => 0)
+        new_slyp = FactoryGirl.create(:slyp)
+        # TODO: check created_at for slyp
 
         # check slyp model's native values
         native_attrs = [:id, :title, :url, :raw_url, :author, :text, :summary, :description, :top_image, :site_name, :video_url] # haven't included datetime stamps, messy comparisons
@@ -83,7 +92,7 @@ RSpec.describe API::V1::Slyps do
   end
 
   describe "DELETE /v1/slyps/:id" do
-    let(:user){ FactoryGirl.create(:user, :with_slyps) }   
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }
     context "when cookie credentials are valid" do
       before do
         set_cookie "user_id=#{user.id}"
@@ -103,7 +112,7 @@ RSpec.describe API::V1::Slyps do
   end
 
   describe "PUT /v1/slyps/engaged/:id" do
-    let(:user){ FactoryGirl.create(:user, :with_slyps) }   
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }
     context "when cookie credentials are valid" do
       before do
         set_cookie "user_id=#{user.id}"
@@ -111,8 +120,84 @@ RSpec.describe API::V1::Slyps do
       end
       it "updates the user_slyp model with engaged=true" do
         slyp = user.slyps.first
-        put "/v1/slyps/engaged/#{slyp.id}" 
+        put "/v1/slyps/engaged/#{slyp.id}"
         expect(user.user_slyps.where(slyp_id: slyp.id).first.engaged).to eq true
+      end
+      it "sends 400 bad request because slyp_id is invalid" do
+        delete "/v1/slyps/-1"
+        expect(last_response.status).to eq 400
+      end
+    end
+  end
+
+  describe "PUT /v1/slyps/loved/:id" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }
+    context "when cookie credentials are valid" do
+      before do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+      end
+      it "updates the user_slyp model with loved" do
+        slyp = user.slyps.first
+        put "/v1/slyps/loved/#{slyp.id}"
+        expect(user.user_slyps.where(slyp_id: slyp.id).first.loved).to eq true
+      end
+      it "sends 400 bad request because slyp_id is invalid" do
+        delete "/v1/slyps/-1"
+        expect(last_response.status).to eq 400
+      end
+    end
+  end
+
+  describe "PUT /v1/slyps/unloved/:id" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }
+    context "when cookie credentials are valid" do
+      before do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+      end
+      it "updates the user_slyp model with loved" do
+        slyp = user.slyps.first
+        put "/v1/slyps/unloved/#{slyp.id}"
+        expect(user.user_slyps.where(slyp_id: slyp.id).first.loved).to eq false
+      end
+      it "sends 400 bad request because slyp_id is invalid" do
+        delete "/v1/slyps/-1"
+        expect(last_response.status).to eq 400
+      end
+    end
+  end
+
+  describe "PUT /v1/slyps/archived/:id" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }
+    context "when cookie credentials are valid" do
+      before do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+      end
+      it "updates the user_slyp model with archived=true" do
+        slyp = user.slyps.first
+        put "/v1/slyps/archived/#{slyp.id}"
+        expect(user.user_slyps.where(slyp_id: slyp.id).first.archived).to eq true
+      end
+      it "sends 400 bad request because slyp_id is invalid" do
+        delete "/v1/slyps/-1"
+        expect(last_response.status).to eq 400
+      end
+    end
+  end
+
+  describe "PUT /v1/slyps/unarchived/:id" do
+    let(:user){ FactoryGirl.create(:user, :with_slyps) }
+    context "when cookie credentials are valid" do
+      before do
+        set_cookie "user_id=#{user.id}"
+        set_cookie "api_token=#{user.api_token}"
+      end
+      it "updates the user_slyp model with engaged=true" do
+        slyp = user.slyps.first
+        put "/v1/slyps/unarchived/#{slyp.id}"
+        expect(user.user_slyps.where(slyp_id: slyp.id).first.archived).to eq false
       end
       it "sends 400 bad request because slyp_id is invalid" do
         delete "/v1/slyps/-1"
