@@ -63,7 +63,6 @@ ActiveRecord::Schema.define(version: 20150823200441) do
     t.boolean  "has_video"
     t.text     "video_url",   limit: 255
     t.datetime "created_at",                     null: false
-    t.text     "topic",       limit: 255
     t.integer  "topic_id",    limit: 4
   end
 

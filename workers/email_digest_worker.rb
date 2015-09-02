@@ -26,7 +26,7 @@ class EmailDigestWorker
 
   def generate_daily_digest(user)
     slyp_list = []
-    user.slyps.limit(5).where("slyps.created_at >= ? AND top_image != ?", Time.now.beginning_of_day, '').each do | slyp |
+    user.slyps.limit(5).where("slyps.created_at >= ? AND top_image != ?", Time.now - 24*3600, '').each do | slyp |
       slyp_list << slyp
     end
     return slyp_list
