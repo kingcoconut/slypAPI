@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
     end
 
     recipient = User.find(recipient_id)
-    if ENV['RACK_ENV'] != "test" && email.split("@")[1].match("example.com").nil?
+    if ENV['RACK_ENV'] != "test" && recipient.email.split("@")[1].match("example.com").nil?
       if recipient.sign_in_count == 0 && recipient.not_emailed_today
         recipient.update(last_emailed_at: Time.now)
         SendSlypWorker.perform_async(self.email, recipient.email, recipient.access_token, @@api_domain)
