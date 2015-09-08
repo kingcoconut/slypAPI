@@ -1,12 +1,11 @@
 class EmailDigestWorker
   include Sidekiq::Worker
   def perform
-    User.all.each do |user|
+    User.all.where.not(sign_in_count: 0).each do |user|
       @slyps = generate_daily_digest(user)
       if !@slyps.empty?
         # main slyp is the first larger image slyp on the email
         @link = [API_DOMAIN, '/v1/users/auth?email=', CGI.escape(user.email), '&access_token=', user.access_token].join('')
-
         subject = "Slyp Daily Digest"
         template = ERB.new(File.read('views/mailers/email_digest.html.erb')).result(binding)
 
