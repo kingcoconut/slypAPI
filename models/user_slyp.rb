@@ -5,7 +5,7 @@ class UserSlyp < ActiveRecord::Base
   
   class Entity < Grape::Entity
     expose :engaged
-    expose :loved
+    expose :starred
     expose :archived
   end
 end

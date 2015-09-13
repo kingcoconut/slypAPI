@@ -18,10 +18,10 @@ class Slyp < ActiveRecord::Base
           +    "from slyp_chats sc "\
           +  "join slyp_chat_users scu "\
           +  "on (sc.id = scu.slyp_chat_id) "\
-          +  "where scu.user_id = "+user_id+" and sc.slyp_id="+self.id.to_s+" "\
+          +  "where scu.user_id = "+user_id.to_s+" and sc.slyp_id="+self.id.to_s+" "\
           +") x "\
           +"join slyp_chat_users scu "\
-          +"on (scu.slyp_chat_id = x.slyp_chat_id and scu.user_id <> "+user_id+") "\
+          +"on (scu.slyp_chat_id = x.slyp_chat_id and scu.user_id <> "+user_id.to_s+") "\
           +"join users u "\
           +"on (scu.user_id = u.id) "\
           +"left join slyp_chat_messages scm "\
@@ -37,12 +37,12 @@ class Slyp < ActiveRecord::Base
           +"on (sc.id = scu.slyp_chat_id) "\
           +"join slyp_chat_messages scm "\
           +"on (scm.slyp_chat_id = sc.id) "\
-          +"where scu.user_id = "+user_id+" and sc.slyp_id = "+self.id.to_s+" and scm.user_id <> "+user_id+" and scm.created_at > scu.last_read_at; "
+          +"where scu.user_id = "+user_id.to_s+" and sc.slyp_id = "+self.id.to_s+" and scm.user_id <> "+user_id.to_s+" and scm.created_at > scu.last_read_at; "
     return ActiveRecord::Base.connection.select_all(sql).first()["unread_messages"]
   end
 
-  def get_user_slyp(user_id)
-    return UserSlyp.find_by(slyp_id: self.id, user_id: user_id)
+  def get_user_slyp()
+    return self.user_slyps.first      
   end
 
   class Entity < Grape::Entity
@@ -59,36 +59,29 @@ class Slyp < ActiveRecord::Base
     expose :site_name
     expose :video_url
     expose :created_at do |slyp, options|
-      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
-      slyp.get_user_slyp(user_id).created_at
+      slyp.get_user_slyp().created_at
     end
     expose :topic, using: Topic::Entity
-    expose :engaged do |slyp, options|
-      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
-      slyp.get_user_slyp(user_id).engaged
+    expose :archived do |slyp|
+      slyp.get_user_slyp().archived
+    end
+    expose :starred do |slyp|
+      slyp.get_user_slyp().starred
+    end
+    expose :engaged do |slyp|
+      slyp.get_user_slyp().engaged
     end
     expose :users do |slyp, options|
-      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
       slyp.get_friends(user_id)
     end
     expose :unread_messages do |slyp, options|
-      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_s
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
       slyp.get_unread_messages_count(user_id)
     end
     expose :sender, using: User::Entity do |slyp, options|
-      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
-      sender_id = slyp.get_user_slyp(user_id).sender_id
+      sender_id = slyp.get_user_slyp().sender_id
       User.find_by(id: sender_id)
     end
   end
 end
-
-
-
-
-
-
-
-
-
-

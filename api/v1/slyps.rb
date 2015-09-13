@@ -11,9 +11,9 @@ module API
         get "slyps" do
           present current_user.slyps.order('created_at DESC')
         end
-        desc "Creates a user_slyp record"
-        post "slyps/:id" do
-
+        get "slyps/:id" do
+          error!("Bad Request", 400) unless slyp = current_user.slyps.find_by(params["id"])
+          present slyp
         end
         desc "Delete user_slyp record from user_slyp table"
         delete "slyps/:id" do
@@ -25,15 +25,15 @@ module API
           error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
           user_slyp.update_attribute(:engaged, true)
         end
-        desc "Mark user_slyps.loved record as true"
-        put "slyps/loved/:id" do
+        desc "Mark user_slyps.starred record as true"
+        put "slyps/starred/:id" do
           error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
-          user_slyp.update_attribute(:loved, true)
+          user_slyp.update_attribute(:starred, true)
         end
-        desc "Mark user_slyps.loved record as false"
-        put "slyps/unloved/:id" do
+        desc "Mark user_slyps.starred record as false"
+        put "slyps/unstarred/:id" do
           error!("Bad Request", 400) unless user_slyp = UserSlyp.where(user_id: current_user.id, slyp_id: params["id"]).first
-          user_slyp.update_attribute(:loved, false)
+          user_slyp.update_attribute(:starred, false)
         end
         desc "Mark user_slyps.archived record as true"
         put "slyps/archived/:id" do

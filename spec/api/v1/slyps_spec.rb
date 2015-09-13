@@ -21,7 +21,7 @@ RSpec.describe API::V1::Slyps do
         json_res = JSON.parse(last_response.body)
 
         # check slyp model's date values
-        date_attrs = [:created_at]
+        date_attrs = [:created_at, :date]
         before_time = Time.now.utc.change(:usec => 0)
         new_slyp = FactoryGirl.create(:slyp)
         # TODO: check created_at for slyp        
@@ -36,17 +36,27 @@ RSpec.describe API::V1::Slyps do
         end
 
         # check slyp model's derived values
-        derived_attrs = [:topic, :engaged, :users, :unread_messgages, :sender]
+        derived_attrs = [:engaged, :archived, :starred, :users, :unread_messages, :sender, :topic]
+
+        all_attrs = date_attrs + native_attrs + derived_attrs
+        fSlyp = json_res.first
+        expect(fSlyp.keys).to match_array all_attrs.map &:to_s
 
         json_res.each do |rSlyp|
           # :engaged
           expect(rSlyp["engaged"]).to eq UserSlyp.where(slyp_id: rSlyp["id"], user_id: user.id).first.engaged
 
+          # :archived
+          expect(rSlyp["archived"]).to eq UserSlyp.where(slyp_id: rSlyp["id"], user_id: user.id).first.archived
+
+          # :starred
+          expect(rSlyp["starred"]).to eq UserSlyp.where(slyp_id: rSlyp["id"], user_id: user.id).first.starred
+
           # :users
           rUsers = rSlyp["users"]
           slyp_id = rSlyp["id"].to_s
           user_id = user.id.to_s
-          sql = "select u.id, u.email, count(distinct scm.id) as unread_messages "\
+          sql = "select u.id, u.email, scu.slyp_chat_id, count(distinct scm.id) as unread_messages "\
           +"from ( "\
           +  "select scu.slyp_chat_id, scu.last_read_at "\
           +    "from slyp_chats sc "\
@@ -85,16 +95,29 @@ RSpec.describe API::V1::Slyps do
           expect(rSender["id"]).to eq dbSender.id
           expect(rSender["email"]).to eq dbSender.email
 
+          # :topic
+          # TODO: how do you test this -- expose :topic, using: Topic::Entity
+
           expect(last_response.status).to eq 200
         end
       end
       it "adds messages to slyp_chat, engages it, then adds more" do
         slyp_chat_id = user.slyp_chats.first.id
-        10.times do 
-          post "/v1/slyp_chat_messages", {content: "foobar", slyp_chat_id: slyp_chat_id}
-        end
-        get "/v1/slyps"
-        binding.pry
+        slyp_id = user.slyp_chats.first.slyp_id
+        # TODO: we have to add messages to this slyp_chat from a different 
+        # user. We want to be able to detect unread messages,
+        # engage those messages and for those states to be reflected on
+        # the get "slyps/:id" endpoint.
+      end
+      it "gets a particular slyp that this user owns" do
+        slyp_id = user.slyps.first.id
+        get "/v1/slyps/"+slyp_id.to_s
+        expect(last_response.status).to eq 200        
+      end
+      it "gets a particular slyp that this user does not own, and responds with a 400" do
+        slyp_id = 0
+        get "/v1/slyps/"+slyp_id.to_s
+        expect(last_response.status).to eq 400
       end
     end
   end
@@ -138,17 +161,17 @@ RSpec.describe API::V1::Slyps do
     end
   end
 
-  describe "PUT /v1/slyps/loved/:id" do
+  describe "PUT /v1/slyps/starred/:id" do
     let(:user){ FactoryGirl.create(:user, :with_slyps) }
     context "when cookie credentials are valid" do
       before do
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
       end
-      it "updates the user_slyp model with loved" do
+      it "updates the user_slyp model with starred" do
         slyp = user.slyps.first
-        put "/v1/slyps/loved/#{slyp.id}"
-        expect(user.user_slyps.where(slyp_id: slyp.id).first.loved).to eq true
+        put "/v1/slyps/starred/#{slyp.id}"
+        expect(user.user_slyps.where(slyp_id: slyp.id).first.starred).to eq true
       end
       it "sends 400 bad request because slyp_id is invalid" do
         delete "/v1/slyps/-1"
@@ -157,17 +180,17 @@ RSpec.describe API::V1::Slyps do
     end
   end
 
-  describe "PUT /v1/slyps/unloved/:id" do
+  describe "PUT /v1/slyps/unstarred/:id" do
     let(:user){ FactoryGirl.create(:user, :with_slyps) }
     context "when cookie credentials are valid" do
       before do
         set_cookie "user_id=#{user.id}"
         set_cookie "api_token=#{user.api_token}"
       end
-      it "updates the user_slyp model with loved" do
+      it "updates the user_slyp model with starred" do
         slyp = user.slyps.first
-        put "/v1/slyps/unloved/#{slyp.id}"
-        expect(user.user_slyps.where(slyp_id: slyp.id).first.loved).to eq false
+        put "/v1/slyps/unstarred/#{slyp.id}"
+        expect(user.user_slyps.where(slyp_id: slyp.id).first.starred).to eq false
       end
       it "sends 400 bad request because slyp_id is invalid" do
         delete "/v1/slyps/-1"
