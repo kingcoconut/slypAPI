@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150913015716) do
+ActiveRecord::Schema.define(version: 20150914010505) do
 
   create_table "keywords", force: :cascade do |t|
     t.string   "keyword",    limit: 255
@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 20150913015716) do
     t.string   "icon_url",          limit: 255
     t.integer  "sign_in_count",     limit: 4,   default: 0
     t.datetime "last_emailed_at"
+    t.string   "ipaddress",         limit: 255
   end
 
 end

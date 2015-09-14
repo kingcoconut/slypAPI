@@ -36,6 +36,7 @@ module API
           if user = User.where(email: params["email"], access_token: params["access_token"]).first
             set_user_cookies(user)
             user.increment!(:sign_in_count)
+            user.update_attribute(:ipaddress, request.env['REMOTE_ADDR'])
           end
           redirect UI_DOMAIN
         end
