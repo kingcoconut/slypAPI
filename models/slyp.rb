@@ -41,8 +41,8 @@ class Slyp < ActiveRecord::Base
     return ActiveRecord::Base.connection.select_all(sql).first()["unread_messages"]
   end
 
-  def get_user_slyp()
-    return self.user_slyps.first      
+  def get_user_slyp(user_id)
+    return self.user_slyps.find_by(user_id: user_id)    
   end
 
   class Entity < Grape::Entity
@@ -59,17 +59,21 @@ class Slyp < ActiveRecord::Base
     expose :site_name
     expose :video_url
     expose :created_at do |slyp, options|
-      slyp.get_user_slyp().created_at
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i      
+      slyp.get_user_slyp(user_id).created_at
     end
     expose :topic, using: Topic::Entity
-    expose :archived do |slyp|
-      slyp.get_user_slyp().archived
+    expose :archived do |slyp, options|
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i      
+      slyp.get_user_slyp(user_id).archived
     end
-    expose :starred do |slyp|
-      slyp.get_user_slyp().starred
+    expose :starred do |slyp, options|
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i            
+      slyp.get_user_slyp(user_id).starred
     end
-    expose :engaged do |slyp|
-      slyp.get_user_slyp().engaged
+    expose :engaged do |slyp, options|
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i      
+      slyp.get_user_slyp(user_id).engaged
     end
     expose :users do |slyp, options|
       user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i
@@ -80,7 +84,8 @@ class Slyp < ActiveRecord::Base
       slyp.get_unread_messages_count(user_id)
     end
     expose :sender, using: User::Entity do |slyp, options|
-      sender_id = slyp.get_user_slyp().sender_id
+      user_id = options[:env]["api.endpoint"].cookies["user_id"].to_i      
+      sender_id = slyp.get_user_slyp(user_id).sender_id
       User.find_by(id: sender_id)
     end
   end
