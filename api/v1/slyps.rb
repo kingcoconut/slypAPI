@@ -12,7 +12,7 @@ module API
           present current_user.slyps.order('created_at DESC')
         end
         get "slyps/:id" do
-          error!("Bad Request", 400) unless slyp = current_user.slyps.find_by(params["id"])
+          error!("Bad Request", 400) unless slyp = current_user.slyps.find_by(id: params["id"])
           present slyp
         end
         desc "Delete user_slyp record from user_slyp table"

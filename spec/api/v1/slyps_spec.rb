@@ -110,8 +110,9 @@ RSpec.describe API::V1::Slyps do
         # the get "slyps/:id" endpoint.
       end
       it "gets a particular slyp that this user owns" do
-        slyp_id = user.slyps.first.id
+        slyp_id = user.slyps.last.id
         get "/v1/slyps/"+slyp_id.to_s
+        expect(JSON.parse(last_response.body)["id"]).to eq user.slyps.find_by(id: slyp_id).id
         expect(last_response.status).to eq 200        
       end
       it "gets a particular slyp that this user does not own, and responds with a 400" do
